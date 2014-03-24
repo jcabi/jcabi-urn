@@ -214,6 +214,7 @@ public final class URNTest {
             "abc",
             "",
             "urn::",
+            "urn:urn:hello",
             "urn:incorrect namespace name with spaces:test",
             "urn:abc+foo:test-me",
             "urn:test:?abc?",

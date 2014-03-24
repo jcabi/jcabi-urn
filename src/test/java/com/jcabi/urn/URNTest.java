@@ -30,6 +30,7 @@
 package com.jcabi.urn;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -79,7 +80,7 @@ public final class URNTest {
      * URN can throw exception when text is NULL.
      * @throws Exception If there is some problem inside
      */
-    @Test(expected = javax.validation.ConstraintViolationException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void throwsExceptionWhenTextIsNull() throws Exception {
         new URN(null);
     }
@@ -102,7 +103,7 @@ public final class URNTest {
      * URN can throw exception when NID is NULL.
      * @throws Exception If there is some problem inside
      */
-    @Test(expected = javax.validation.ConstraintViolationException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void throwsExceptionWhenNidIsNull() throws Exception {
         new URN(null, "some-test-nss");
     }
@@ -111,7 +112,7 @@ public final class URNTest {
      * URN can throw exception when NSS is NULL.
      * @throws Exception If there is some problem inside
      */
-    @Test(expected = javax.validation.ConstraintViolationException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void throwsExceptionWhenNssIsNull() throws Exception {
         new URN("namespace1", null);
     }
@@ -166,7 +167,7 @@ public final class URNTest {
      * URN can catch incorrect syntax.
      * @throws Exception If there is some problem inside
      */
-    @Test(expected = java.net.URISyntaxException.class)
+    @Test(expected = URISyntaxException.class)
     public void catchesIncorrectURNSyntax() throws Exception {
         new URN("some incorrect name");
     }
@@ -177,7 +178,7 @@ public final class URNTest {
      */
     @Test
     public void passesCorrectURNSyntax() throws Exception {
-        final String[] texts = new String[] {
+        final String[] texts = {
             "URN:hello:test",
             "urn:foo:some%20text%20with%20spaces",
             "urn:a:",
@@ -193,7 +194,7 @@ public final class URNTest {
             "urn:a:?alpha=50*",
             "urn:a:b/c/d",
         };
-        for (String text : texts) {
+        for (final String text : texts) {
             final URN urn = URN.create(text);
             MatcherAssert.assertThat(
                 URN.create(urn.toString()),
@@ -209,7 +210,7 @@ public final class URNTest {
      */
     @Test
     public void throwsExceptionForIncorrectURNSyntax() throws Exception {
-        final String[] texts = new String[] {
+        final String[] texts = {
             "abc",
             "",
             "urn::",
@@ -223,11 +224,11 @@ public final class URNTest {
             "urn:test:spaces are not allowed here",
             "urn:test:unicode-has-to-be-encoded:\u8514",
         };
-        for (String text : texts) {
+        for (final String text : texts) {
             try {
                 URN.create(text);
                 MatcherAssert.assertThat(text, Matchers.nullValue());
-            } catch (IllegalArgumentException ex) {
+            } catch (final IllegalArgumentException ex) {
                 assert ex != null;
             }
         }
@@ -256,7 +257,7 @@ public final class URNTest {
      * URN can be "empty" only in one form, with from-text ctor.
      * @throws Exception If there is some problem inside
      */
-    @Test(expected = java.net.URISyntaxException.class)
+    @Test(expected = URISyntaxException.class)
     public void emptyURNHasOnlyOneVariantWithTextCtor() throws Exception {
         new URN("urn:void:it-is-impossible-to-have-any-NSS-here");
     }
@@ -325,15 +326,15 @@ public final class URNTest {
     @Test
     public void persistsOrderingOfParams() throws Exception {
         final List<String> params = Arrays.asList(
-            new String[] {"ft", "sec", "9", "123", "a1b2c3", "A", "B", "C"}
+            "ft", "sec", "9", "123", "a1b2c3", "A", "B", "C"
         );
         URN first = new URN("urn:test:x");
         URN second = first;
-        for (String param : params) {
+        for (final String param : params) {
             first = first.param(param, "");
         }
         Collections.shuffle(params);
-        for (String param : params) {
+        for (final String param : params) {
             second = second.param(param, "");
         }
         MatcherAssert.assertThat(first, Matchers.equalTo(second));

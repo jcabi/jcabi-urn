@@ -30,15 +30,15 @@
 package com.jcabi.urn;
 
 import com.jcabi.aspects.Immutable;
+import com.jcabi.aspects.Tv;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.Map;
 import java.util.TreeMap;
-import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -69,6 +69,11 @@ public final class URN implements Comparable<URN>, Serializable {
      * Serialization marker.
      */
     private static final long serialVersionUID = 0xBF46AFCD9612A6DFL;
+
+    /**
+     * Encoding to use.
+     */
+    private static final String ENCODING = "UTF-8";
 
     /**
      * NID of an empty URN.
@@ -110,7 +115,10 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param text The text of the URN
      * @throws URISyntaxException If syntax is not correct
      */
-    public URN(@NotNull final String text) throws URISyntaxException {
+    public URN(final String text) throws URISyntaxException {
+        if (text == null) {
+            throw new IllegalArgumentException("text can't be NULL");
+        }
         if (!text.matches(URN.REGEX)) {
             throw new URISyntaxException(text, "Invalid format of URN");
         }
@@ -123,7 +131,13 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param nid The namespace ID
      * @param nss The namespace specific string
      */
-    public URN(@NotNull final String nid, @NotNull final String nss) {
+    public URN(final String nid, final String nss) {
+        if (nid == null) {
+            throw new IllegalArgumentException("NID can't be NULL");
+        }
+        if (nss == null) {
+            throw new IllegalArgumentException("NSS can't be NULL");
+        }
         this.uri = String.format(
             "%s%s%s%2$s%s",
             URN.PREFIX,
@@ -133,7 +147,7 @@ public final class URN implements Comparable<URN>, Serializable {
         );
         try {
             this.validate();
-        } catch (URISyntaxException ex) {
+        } catch (final URISyntaxException ex) {
             throw new IllegalArgumentException(ex);
         }
     }
@@ -144,25 +158,22 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param text The text of the URN
      * @return The URN created
      */
-    public static URN create(@NotNull final String text) {
+    public static URN create(final String text) {
+        if (text == null) {
+            throw new IllegalArgumentException("URN can't be NULL");
+        }
         try {
             return new URN(text);
-        } catch (URISyntaxException ex) {
+        } catch (final URISyntaxException ex) {
             throw new IllegalArgumentException(ex);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return this.uri;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int compareTo(final URN urn) {
         return this.uri.compareTo(urn.uri);
@@ -177,7 +188,7 @@ public final class URN implements Comparable<URN>, Serializable {
         boolean valid = true;
         try {
             new URN(text);
-        } catch (URISyntaxException ex) {
+        } catch (final URISyntaxException ex) {
             valid = false;
         }
         return valid;
@@ -188,9 +199,12 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param pattern The pattern to match
      * @return Yes of no
      */
-    public boolean matches(@NotNull final String pattern) {
+    public boolean matches(final String pattern) {
+        if (pattern == null) {
+            throw new IllegalArgumentException("pattern can't be NULL");
+        }
         boolean matches = false;
-        if (this.equals(pattern)) {
+        if (this.toString().equals(pattern)) {
             matches = true;
         } else if (pattern.endsWith("*")) {
             final String body = pattern.substring(0, pattern.length() - 1);
@@ -229,8 +243,8 @@ public final class URN implements Comparable<URN>, Serializable {
      */
     public String nss() {
         try {
-            return URLDecoder.decode(this.segment(2), CharEncoding.UTF_8);
-        } catch (java.io.UnsupportedEncodingException ex) {
+            return URLDecoder.decode(this.segment(2), URN.ENCODING);
+        } catch (final UnsupportedEncodingException ex) {
             throw new IllegalStateException(ex);
         }
     }
@@ -248,7 +262,10 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param name Name of parameter
      * @return The value of it
      */
-    public String param(@NotNull final String name) {
+    public String param(final String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("param name can't be NULL");
+        }
         final Map<String, String> params = this.params();
         if (!params.containsKey(name)) {
             throw new IllegalArgumentException(
@@ -269,7 +286,13 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param value The value of parameter
      * @return New URN
      */
-    public URN param(@NotNull final String name, @NotNull final Object value) {
+    public URN param(final String name, final Object value) {
+        if (name == null) {
+            throw new IllegalArgumentException("param can't be NULL");
+        }
+        if (value == null) {
+            throw new IllegalArgumentException("param value can't be NULL");
+        }
         final Map<String, String> params = this.params();
         params.put(name, value.toString());
         return URN.create(
@@ -348,13 +371,13 @@ public final class URN implements Comparable<URN>, Serializable {
         final String[] sectors = StringUtils.split(urn, '?');
         if (sectors.length == 2) {
             final String[] parts = StringUtils.split(sectors[1], '&');
-            for (String part : parts) {
+            for (final String part : parts) {
                 final String[] pair = StringUtils.split(part, '=');
-                String value;
+                final String value;
                 if (pair.length == 2) {
                     try {
-                        value = URLDecoder.decode(pair[1], CharEncoding.UTF_8);
-                    } catch (java.io.UnsupportedEncodingException ex) {
+                        value = URLDecoder.decode(pair[1], URN.ENCODING);
+                    } catch (final UnsupportedEncodingException ex) {
                         throw new IllegalStateException(ex);
                     }
                 } else {
@@ -372,17 +395,17 @@ public final class URN implements Comparable<URN>, Serializable {
      * @return The suffix of URN, starting with "?"
      */
     private static String enmap(final Map<String, String> params) {
-        final StringBuilder query = new StringBuilder();
+        final StringBuilder query = new StringBuilder(Tv.HUNDRED);
         if (!params.isEmpty()) {
-            query.append("?");
+            query.append('?');
             boolean first = true;
-            for (Map.Entry<String, String> param : params.entrySet()) {
+            for (final Map.Entry<String, String> param : params.entrySet()) {
                 if (!first) {
-                    query.append("&");
+                    query.append('&');
                 }
                 query.append(param.getKey());
                 if (!param.getValue().isEmpty()) {
-                    query.append("=").append(URN.encode(param.getValue()));
+                    query.append('=').append(URN.encode(param.getValue()));
                 }
                 first = false;
             }
@@ -396,18 +419,18 @@ public final class URN implements Comparable<URN>, Serializable {
      * @return The encoded text
      */
     private static String encode(final String text) {
-        final StringBuilder encoded = new StringBuilder();
-        byte[] bytes;
+        final StringBuilder encoded = new StringBuilder(Tv.HUNDRED);
+        final byte[] bytes;
         try {
-            bytes = text.getBytes(CharEncoding.UTF_8);
-        } catch (java.io.UnsupportedEncodingException ex) {
+            bytes = text.getBytes(URN.ENCODING);
+        } catch (final UnsupportedEncodingException ex) {
             throw new IllegalStateException(ex);
         }
-        for (byte chr : bytes) {
+        for (final byte chr : bytes) {
             if (URN.allowed(chr)) {
                 encoded.append((char) chr);
             } else {
-                encoded.append("%").append(String.format("%X", chr));
+                encoded.append('%').append(String.format("%X", chr));
             }
         }
         return encoded.toString();
@@ -420,10 +443,10 @@ public final class URN implements Comparable<URN>, Serializable {
      */
     private static boolean allowed(final byte chr) {
         // @checkstyle BooleanExpressionComplexity (4 lines)
-        return (chr >= 'A' && chr <= 'Z')
-            || (chr >= '0' && chr <= '9')
-            || (chr >= 'a' && chr <= 'z')
-            || (chr == '/') || (chr == '-');
+        return chr >= 'A' && chr <= 'Z'
+            || chr >= '0' && chr <= '9'
+            || chr >= 'a' && chr <= 'z'
+            || (chr == '/') || chr == '-';
     }
 
 }

@@ -178,6 +178,7 @@ public final class URNTest {
     @Test
     public void passesCorrectURNSyntax() throws Exception {
         final String[] texts = new String[] {
+            "URN:hello:test",
             "urn:foo:some%20text%20with%20spaces",
             "urn:a:",
             "urn:a:?alpha=50",

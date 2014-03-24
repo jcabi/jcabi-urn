@@ -351,12 +351,18 @@ public final class URN implements Comparable<URN>, Serializable {
                 "Empty URN can't have NSS"
             );
         }
-        if (!this.nid().matches("^[a-z]{1,31}$")) {
+        final String nid = this.nid();
+        if (!nid.matches("^[a-z]{1,31}$")) {
             throw new IllegalArgumentException(
                 String.format(
                     "NID '%s' can contain up to 31 low case letters",
                     this.nid()
                 )
+            );
+        }
+        if (StringUtils.equalsIgnoreCase(URN.PREFIX, nid)) {
+            throw new IllegalArgumentException(
+                "NID can't be 'urn' according to RFC 2141, section 2.1"
             );
         }
     }

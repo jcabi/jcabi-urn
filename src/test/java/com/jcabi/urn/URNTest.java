@@ -31,12 +31,11 @@ package com.jcabi.urn;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+
 import org.apache.commons.lang3.SerializationUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -72,9 +71,24 @@ public final class URNTest {
         final URN urn = new URN("test", "walter sobchak!");
         MatcherAssert.assertThat(
             urn.toString(),
-            Matchers.equalTo("urn:test:walter%20sobchak%21")
+            Matchers.equalTo("urn:test:walter+sobchak!")
         );
     }
+
+
+    /**
+     * URN can encode NSS properly.
+     * @throws Exception If there is some problem inside
+     */
+    @Test
+    public void encodesNssAsRequiredByUrnSyntax() throws Exception {
+        final URN urn = new URN("test", "walter%/#sobchak?");
+        MatcherAssert.assertThat(
+                urn.toString(),
+                Matchers.equalTo("urn:test:walter%25%2F%23sobchak%3F")
+        );
+    }
+
 
     /**
      * URN can throw exception when text is NULL.
@@ -182,17 +196,9 @@ public final class URNTest {
             "URN:hello:test",
             "urn:foo:some%20text%20with%20spaces",
             "urn:a:",
-            "urn:a:?alpha=50",
-            "urn:a:?boom",
-            "urn:a:test?123",
-            "urn:a:test?1a2b3c",
-            "urn:a:test?1A2B3C",
-            "urn:a:?alpha=abccde%20%45%4Fme",
-            "urn:woquo:ns:pa/procure/BalanceRecord?name=*",
-            "urn:a:?alpha=50&beta=u%20worksfine",
             "urn:verylongnamespaceid:",
-            "urn:a:?alpha=50*",
-            "urn:a:b/c/d",
+            "URN:FOO:",
+            "urn:nbn:sub:name:spaces:for:everybody"
         };
         for (final String text : texts) {
             final URN urn = URN.create(text);
@@ -224,6 +230,16 @@ public final class URNTest {
             "urn:verylongnameofanamespaceverylongnameofanamespace:",
             "urn:test:spaces are not allowed here",
             "urn:test:unicode-has-to-be-encoded:\u8514",
+            "urn:a:?alpha=50",
+            "urn:a:?boom",
+            "urn:a:test?123",
+            "urn:a:test?1a2b3c",
+            "urn:a:test?1A2B3C",
+            "urn:a:?alpha=abccde%20%45%4Fme",
+            "urn:woquo:ns:pa/procure/BalanceRecord?name=*",
+            "urn:a:?alpha=50&beta=u%20worksfine",
+            "urn:a:?alpha=50*",
+            "urn:a:b/c/d",
         };
         for (final String text : texts) {
             try {
@@ -276,38 +292,8 @@ public final class URNTest {
     }
 
     /**
-     * URN can add and retrieve params.
-     * @throws Exception If there is some problem inside
-     */
-    @Test
-    public void addAndRetrievesParamsByName() throws Exception {
-        final String name = "crap";
-        final String value = "@!$#^\u0433iu**76\u0945";
-        final URN urn = new URN("urn:test:x?bb")
-            .param("bar", "\u8514 value?")
-            .param(name, value);
-        MatcherAssert.assertThat(
-            urn.toString(),
-            Matchers.containsString("bar=%E8%94%94%20value%3F")
-        );
-        MatcherAssert.assertThat(urn.param("bb"), Matchers.equalTo(""));
-        MatcherAssert.assertThat(urn.param(name), Matchers.equalTo(value));
-    }
-
-    /**
-     * URN can fetch a pure part (without params) from itself.
-     * @throws Exception If there is some problem inside
-     */
-    @Test
-    public void fetchesBodyWithoutParams() throws Exception {
-        MatcherAssert.assertThat(
-            new URN("urn:test:something?a=9&b=4").pure(),
-            Matchers.equalTo(new URN("urn:test:something"))
-        );
-    }
-
-    /**
      * URN can be serialized.
+     *
      * @throws Exception If there is some problem inside
      */
     @Test
@@ -315,30 +301,9 @@ public final class URNTest {
         final URN urn = new URN("urn:test:some-data-to-serialize");
         final byte[] bytes = SerializationUtils.serialize(urn);
         MatcherAssert.assertThat(
-            ((URN) SerializationUtils.deserialize(bytes)).toString(),
-            Matchers.equalTo(urn.toString())
+                SerializationUtils.deserialize(bytes).toString(),
+                Matchers.equalTo(urn.toString())
         );
-    }
-
-    /**
-     * URN can be persistent in params ordering.
-     * @throws Exception If there is some problem inside
-     */
-    @Test
-    public void persistsOrderingOfParams() throws Exception {
-        final List<String> params = Arrays.asList(
-            "ft", "sec", "9", "123", "a1b2c3", "A", "B", "C"
-        );
-        URN first = new URN("urn:test:x");
-        URN second = first;
-        for (final String param : params) {
-            first = first.param(param, "");
-        }
-        Collections.shuffle(params);
-        for (final String param : params) {
-            second = second.param(param, "");
-        }
-        MatcherAssert.assertThat(first, Matchers.equalTo(second));
     }
 
     /**
@@ -351,6 +316,24 @@ public final class URNTest {
             new URNMocker().mock(),
             Matchers.not(Matchers.equalTo(new URNMocker().mock()))
         );
+    }
+
+
+
+    @Test
+    public void checkNotLexicalEquivalent() throws Exception {
+        final String[] equivalentURNs = new String[]{
+                "URN:foo:a123,456",
+                "urn:foo:a123,456",
+                "urn:FOO:a123,456",
+                "urn:foo:a123%2C456",
+                "URN:FOO:a123%2c456"
+        };
+        final URN notEquiv = new URN("urn:foo:A123,456");
+        for (String f : equivalentURNs) {
+            final URN urn = new URN(f);
+            Assert.assertNotEquals(urn, notEquiv);
+        }
     }
 
 }

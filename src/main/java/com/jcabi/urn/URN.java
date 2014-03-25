@@ -36,8 +36,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
-import java.util.Map;
-import java.util.TreeMap;
+import java.net.URLEncoder;
+
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 
@@ -90,12 +90,29 @@ public final class URN implements Comparable<URN>, Serializable {
      */
     private static final String SEP = ":";
 
+
+    /**
+     * Regular expression matching NID.
+     */
+    private static final String REGEX_NID =
+            "[a-zA-Z0-9]{1,31}";
+
+    /**
+     * Regular expression matching NSS.
+     */
+    private static final String REGEX_NSS =
+            "([\\-a-zA-Z0-9()+,\\-\\.:=@;$_!\\*']|%[0-9a-fA-F]{2})*";
+
+    /**
+     * Regular expression matching URN prefix, case insensitive.
+     */
+    private static final String REGEX_URN_PREFIX = "(?i)urn(?-i)";
+
     /**
      * Validating regular expr.
      */
     private static final String REGEX =
-        // @checkstyle LineLength (1 line)
-        "^(?i)^urn(?-i):[a-z]{1,31}(:([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)+(\\?\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?(&\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?)*)?\\*?$";
+        "^" + REGEX_URN_PREFIX + SEP + REGEX_NID + SEP + REGEX_NSS + "$";
 
     /**
      * The URI.
@@ -106,7 +123,7 @@ public final class URN implements Comparable<URN>, Serializable {
     /**
      * Public ctor (for JAXB mostly) that creates an "empty" URN.
      */
-    public URN() {
+    public URN() throws UnsupportedEncodingException {
         this(URN.EMPTY, "");
     }
 
@@ -131,7 +148,7 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param nid The namespace ID
      * @param nss The namespace specific string
      */
-    public URN(final String nid, final String nss) {
+    public URN(final String nid, final String nss) throws UnsupportedEncodingException {
         if (nid == null) {
             throw new IllegalArgumentException("NID can't be NULL");
         }
@@ -139,11 +156,11 @@ public final class URN implements Comparable<URN>, Serializable {
             throw new IllegalArgumentException("NSS can't be NULL");
         }
         this.uri = String.format(
-            "%s%s%s%2$s%s",
-            URN.PREFIX,
-            URN.SEP,
-            nid,
-            URN.encode(nss)
+                "%s%s%s%2$s%s",
+                URN.PREFIX,
+                URN.SEP,
+                nid,
+                URN.encode(nss)
         );
         try {
             this.validate();
@@ -250,83 +267,6 @@ public final class URN implements Comparable<URN>, Serializable {
     }
 
     /**
-     * Get all params.
-     * @return The params
-     */
-    public Map<String, String> params() {
-        return URN.demap(this.toString());
-    }
-
-    /**
-     * Get query param by name.
-     * @param name Name of parameter
-     * @return The value of it
-     */
-    public String param(final String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("param name can't be NULL");
-        }
-        final Map<String, String> params = this.params();
-        if (!params.containsKey(name)) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Param '%s' not found in '%s', among %s",
-                    name,
-                    this,
-                    params.keySet()
-                )
-            );
-        }
-        return params.get(name);
-    }
-
-    /**
-     * Add (overwrite) a query param and return a new URN.
-     * @param name Name of parameter
-     * @param value The value of parameter
-     * @return New URN
-     */
-    public URN param(final String name, final Object value) {
-        if (name == null) {
-            throw new IllegalArgumentException("param can't be NULL");
-        }
-        if (value == null) {
-            throw new IllegalArgumentException("param value can't be NULL");
-        }
-        final Map<String, String> params = this.params();
-        params.put(name, value.toString());
-        return URN.create(
-            String.format(
-                "%s%s",
-                StringUtils.split(this.toString(), '?')[0],
-                URN.enmap(params)
-            )
-        );
-    }
-
-    /**
-     * Get just body of URN, without params.
-     * @return Clean version of it
-     */
-    public URN pure() {
-        String urn = this.toString();
-        if (this.hasParams()) {
-            // @checkstyle MultipleStringLiterals (1 line)
-            urn = urn.substring(0, urn.indexOf('?'));
-        }
-        return URN.create(urn);
-    }
-
-    /**
-     * Whether this URN has params?
-     * @return Has them?
-     */
-    public boolean hasParams() {
-        // @checkstyle MultipleStringLiterals (1 line)
-        return this.toString().contains("?");
-    }
-
-    /**
      * Get segment by position.
      * @param pos Its position
      * @return The segment
@@ -352,10 +292,10 @@ public final class URN implements Comparable<URN>, Serializable {
             );
         }
         final String nid = this.nid();
-        if (!nid.matches("^[a-z]{1,31}$")) {
+        if (!nid.matches(REGEX_NID)) {
             throw new IllegalArgumentException(
                 String.format(
-                    "NID '%s' can contain up to 31 low case letters",
+                    "NID '%s' is not valid.",
                     this.nid()
                 )
             );
@@ -368,75 +308,17 @@ public final class URN implements Comparable<URN>, Serializable {
     }
 
     /**
-     * Decode query part of the URN into Map.
-     * @param urn The URN to demap
-     * @return The map of values
-     */
-    private static Map<String, String> demap(final String urn) {
-        final Map<String, String> map = new TreeMap<String, String>();
-        final String[] sectors = StringUtils.split(urn, '?');
-        if (sectors.length == 2) {
-            final String[] parts = StringUtils.split(sectors[1], '&');
-            for (final String part : parts) {
-                final String[] pair = StringUtils.split(part, '=');
-                final String value;
-                if (pair.length == 2) {
-                    try {
-                        value = URLDecoder.decode(pair[1], URN.ENCODING);
-                    } catch (final UnsupportedEncodingException ex) {
-                        throw new IllegalStateException(ex);
-                    }
-                } else {
-                    value = "";
-                }
-                map.put(pair[0], value);
-            }
-        }
-        return map;
-    }
-
-    /**
-     * Encode map of params into query part of URN.
-     * @param params Map of params to convert to query suffix
-     * @return The suffix of URN, starting with "?"
-     */
-    private static String enmap(final Map<String, String> params) {
-        final StringBuilder query = new StringBuilder(Tv.HUNDRED);
-        if (!params.isEmpty()) {
-            query.append('?');
-            boolean first = true;
-            for (final Map.Entry<String, String> param : params.entrySet()) {
-                if (!first) {
-                    query.append('&');
-                }
-                query.append(param.getKey());
-                if (!param.getValue().isEmpty()) {
-                    query.append('=').append(URN.encode(param.getValue()));
-                }
-                first = false;
-            }
-        }
-        return query.toString();
-    }
-
-    /**
      * Perform proper URL encoding with the text.
      * @param text The text to encode
      * @return The encoded text
      */
-    private static String encode(final String text) {
+    private static String encode(final String text) throws UnsupportedEncodingException {
         final StringBuilder encoded = new StringBuilder(Tv.HUNDRED);
-        final byte[] bytes;
-        try {
-            bytes = text.getBytes(URN.ENCODING);
-        } catch (final UnsupportedEncodingException ex) {
-            throw new IllegalStateException(ex);
-        }
-        for (final byte chr : bytes) {
+        for (final char chr : text.toCharArray()) {
             if (URN.allowed(chr)) {
-                encoded.append((char) chr);
+                encoded.append(chr);
             } else {
-                encoded.append('%').append(String.format("%X", chr));
+                encoded.append(URLEncoder.encode(String.valueOf(chr), URN.ENCODING));
             }
         }
         return encoded.toString();
@@ -447,12 +329,19 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param chr The character
      * @return It is allowed?
      */
-    private static boolean allowed(final byte chr) {
+    private static boolean allowed(final char chr) {
         // @checkstyle BooleanExpressionComplexity (4 lines)
         return chr >= 'A' && chr <= 'Z'
             || chr >= '0' && chr <= '9'
             || chr >= 'a' && chr <= 'z'
-            || (chr == '/') || chr == '-';
+            || chr == '(' || chr == ')'
+            || chr == '+' || chr == ','
+            || chr == '-' || chr == '.'
+            || chr == ':' || chr == '='
+            || chr == '@' || chr == ';'
+            || chr == '$' || chr == '_'
+            || chr == '!' || chr == '*'
+            || chr == '\'';
     }
 
 }

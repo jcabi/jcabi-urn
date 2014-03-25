@@ -29,6 +29,7 @@
  */
 package com.jcabi.urn;
 
+import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 /**
@@ -81,7 +82,7 @@ public final class URNMocker {
      * Mock it.
      * @return Mocked URN
      */
-    public URN mock() {
+    public URN mock() throws UnsupportedEncodingException {
         return new URN(this.nid, this.nss);
     }
 

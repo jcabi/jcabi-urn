@@ -368,7 +368,7 @@ public final class URNTest {
             "urn:foo:a123,456",
             "urn:FOO:a123,456",
             "urn:foo:a123%2C456",
-            "URN:FOO:a123%2c456"
+            "URN:FOO:a123%2c456",
         };
         for (final String first : urns) {
             for (final String second : urns) {

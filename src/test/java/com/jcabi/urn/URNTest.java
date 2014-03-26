@@ -37,6 +37,7 @@ import java.util.List;
 import org.apache.commons.lang3.SerializationUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -351,6 +352,32 @@ public final class URNTest {
             new URNMocker().mock(),
             Matchers.not(Matchers.equalTo(new URNMocker().mock()))
         );
+    }
+
+    /**
+     * URN can be lexical equivalent according to RFC 2144, section 6.
+     * @throws Exception if URN parsing fails.
+     * @see <a href="http://www.ietf.org/rfc/rfc2141.txt"/>
+     * @see https://github.com/jcabi/jcabi-urn/issues/8
+     */
+    @Test
+    @Ignore
+    public void checkLexicalEquivalence() throws Exception {
+        final String[] urns = {
+            "URN:foo:a123,456",
+            "urn:foo:a123,456",
+            "urn:FOO:a123,456",
+            "urn:foo:a123%2C456",
+            "URN:FOO:a123%2c456"
+        };
+        for (final String first : urns) {
+            for (final String second : urns) {
+                MatcherAssert.assertThat(
+                    URN.create(first),
+                    Matchers.equalTo(URN.create(second))
+                );
+            }
+        }
     }
 
 }

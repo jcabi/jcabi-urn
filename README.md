@@ -6,7 +6,7 @@
 [![Build Status](https://travis-ci.org/jcabi/jcabi-urn.svg?branch=master)](https://travis-ci.org/jcabi/jcabi-urn)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.jcabi/jcabi-urn/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.jcabi/jcabi-urn)
 
-More details are here: [www.jcabi.com/jcabi-urn](http://www.jcabi.com/jcabi-urn/index.html)
+More details are here: [urn.jcabi.com](http://urn.jcabi.com/index.html)
 
 `URN` is an immutable implementation of a Uniform Resource Name (URN)
 according to [RFC 2141](http://tools.ietf.org/html/rfc2141):

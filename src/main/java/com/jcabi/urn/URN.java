@@ -62,7 +62,9 @@ import org.apache.commons.lang3.StringUtils;
  */
 @Immutable
 @EqualsAndHashCode
-@SuppressWarnings({ "PMD.TooManyMethods", "PMD.UseConcurrentHashMap" })
+@SuppressWarnings({
+    "PMD.TooManyMethods", "PMD.UseConcurrentHashMap", "PMD.GodClass"
+})
 public final class URN implements Comparable<URN>, Serializable {
 
     /**
@@ -425,13 +427,13 @@ public final class URN implements Comparable<URN>, Serializable {
      * @return The encoded text
      */
     private static String encode(final String text) {
-        final StringBuilder encoded = new StringBuilder(Tv.HUNDRED);
         final byte[] bytes;
         try {
             bytes = text.getBytes(URN.ENCODING);
         } catch (final UnsupportedEncodingException ex) {
             throw new IllegalStateException(ex);
         }
+        final StringBuilder encoded = new StringBuilder(Tv.HUNDRED);
         for (final byte chr : bytes) {
             if (URN.allowed(chr)) {
                 encoded.append((char) chr);

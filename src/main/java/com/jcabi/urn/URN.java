@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012-2013, JCabi.com
+ * Copyright (c) 2012-2015, jcabi.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ import org.apache.commons.lang3.StringUtils;
  * It will become compliant in one of our future versions. Once it becomes
  * fully compliant this notice will be removed.
  *
- * @author Yegor Bugayenko (yegor@tpc2.com)
+ * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.6
  * @see <a href="http://tools.ietf.org/html/rfc2141">RFC 2141</a>

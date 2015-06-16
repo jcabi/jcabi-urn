@@ -4,7 +4,9 @@
 [![DevOps By Rultor.com](http://www.rultor.com/b/jcabi/jcabi-urn)](http://www.rultor.com/p/jcabi/jcabi-urn)
 
 [![Build Status](https://travis-ci.org/jcabi/jcabi-urn.svg?branch=master)](https://travis-ci.org/jcabi/jcabi-urn)
+[![Build status](https://ci.appveyor.com/api/projects/status/9eu1jjs99bfji7da/branch/master?svg=true)](https://ci.appveyor.com/project/yegor256/jcabi-urn/branch/master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.jcabi/jcabi-urn/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.jcabi/jcabi-urn)
+[![JavaDoc](https://img.shields.io/badge/javadoc-html-blue.svg)](http://www.javadoc.io/doc/com.jcabi/jcabi-urn)
 
 More details are here: [urn.jcabi.com](http://urn.jcabi.com/index.html)
 

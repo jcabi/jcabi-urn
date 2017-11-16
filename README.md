@@ -7,7 +7,7 @@
 [![PDD status](http://www.0pdd.com/svg?name=jcabi/jcabi-urn)](http://www.0pdd.com/p?name=jcabi/jcabi-urn)
 [![Build status](https://ci.appveyor.com/api/projects/status/9eu1jjs99bfji7da/branch/master?svg=true)](https://ci.appveyor.com/project/yegor256/jcabi-urn/branch/master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.jcabi/jcabi-urn/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.jcabi/jcabi-urn)
-[![Javadoc](https://javadoc-emblem.rhcloud.com/doc/com.jcabi/jcabi-urn/badge.svg)](http://www.javadoc.io/doc/com.jcabi/jcabi-urn)
+[![Javadoc](https://javadoc.io/badge/com.jcabi/jcabi-urn.svg)](http://www.javadoc.io/doc/com.jcabi/jcabi-urn)
 
 More details are here: [urn.jcabi.com](http://urn.jcabi.com/index.html)
 

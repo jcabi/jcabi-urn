@@ -224,6 +224,8 @@ public final class UrnTest {
             "urn:a:b/c/d",
             "urn:multiple:colon:urn:1234",
             "urn:with-dash-nid:1234",
+            "urn:let-num-123:12345",
+            "urn:exactly-32-characters-1234567890:12345"
         };
         for (final String text : texts) {
             final URN urn = URN.create(text);

@@ -31,6 +31,9 @@ package com.jcabi.urn;
 
 import com.jcabi.aspects.Immutable;
 import com.jcabi.aspects.Tv;
+import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -38,8 +41,6 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.Map;
 import java.util.TreeMap;
-import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Uniform Resource Name (URN) as in
@@ -98,7 +99,7 @@ public final class URN implements Comparable<URN>, Serializable {
      */
     private static final String REGEX =
         // @checkstyle LineLength (1 line)
-        "^(?i)^urn(?-i):[a-z][a-z-]{0,30}(:([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)+(\\?\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?(&\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?)*)?\\*?$";
+        "^(?i)^urn(?-i):[a-z0-9][a-z0-9-]{0,31}(:([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)+(\\?\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?(&\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?)*)?\\*?$";
 
     /**
      * The URI.
@@ -371,9 +372,9 @@ public final class URN implements Comparable<URN>, Serializable {
         if (nid == null) {
             throw new IllegalArgumentException("NID can't be NULL");
         }
-        if (!nid.matches("^[a-z][a-z-]{0,30}$")) {
+        if (!nid.matches("^[a-z0-9][a-z0-9-]{0,31}$")) {
             throw new IllegalArgumentException(
-            String.format("NID '%s' can contain up to 31 low case letters or dashes.", nid)
+            String.format("NID '%s' can contain up to 31 low case letters, numbers or dashes.", nid)
             );
         }
         if (StringUtils.equalsIgnoreCase(URN.PREFIX, nid)) {

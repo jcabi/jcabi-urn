@@ -31,6 +31,9 @@ package com.jcabi.urn;
 
 import com.jcabi.aspects.Immutable;
 import com.jcabi.aspects.Tv;
+import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -38,8 +41,6 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.Map;
 import java.util.TreeMap;
-import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Uniform Resource Name (URN) as in
@@ -97,7 +98,7 @@ public final class URN implements Comparable<URN>, Serializable {
      */
     private static final String REGEX =
         // @checkstyle LineLength (1 line)
-        "^(?i)^urn(?-i):[a-z]{1,31}(:([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)+(\\?\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?(&\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?)*)?\\*?$";
+        "^(?i)^urn(?-i):[a-z][a-z-]{0,30}(:([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)+(\\?\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?(&\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?)*)?\\*?$";
 
     /**
      * The URI.
@@ -134,9 +135,7 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param nss The namespace specific string
      */
     public URN(final String nid, final String nss) {
-        if (nid == null) {
-            throw new IllegalArgumentException("NID can't be NULL");
-        }
+        validateNID(nid);
         if (nss == null) {
             throw new IllegalArgumentException("NSS can't be NULL");
         }
@@ -354,17 +353,21 @@ public final class URN implements Comparable<URN>, Serializable {
             );
         }
         final String nid = this.nid();
-        if (!nid.matches("^[a-z]{1,31}$")) {
+        validateNID(nid);
+    }
+
+    private static void validateNID(String nid) throws IllegalArgumentException {
+        if (nid == null) {
+            throw new IllegalArgumentException("NID can't be NULL");
+        }
+        if (!nid.matches("^[a-z][a-z-]{0,30}$")) {
             throw new IllegalArgumentException(
-                String.format(
-                    "NID '%s' can contain up to 31 low case letters",
-                    this.nid()
-                )
+                    String.format("NID '%s' can contain up to 31 low case letters or a dash (not the first character)", nid)
             );
         }
         if (StringUtils.equalsIgnoreCase(URN.PREFIX, nid)) {
             throw new IllegalArgumentException(
-                "NID can't be 'urn' according to RFC 2141, section 2.1"
+                    "NID can't be 'urn' according to RFC 2141, section 2.1"
             );
         }
     }

@@ -29,17 +29,17 @@
  */
 package com.jcabi.urn;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.commons.lang3.SerializationUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Uniform Resource Name (URN), tests.
@@ -225,7 +225,7 @@ public final class UrnTest {
             "urn:multiple:colon:urn:1234",
             "urn:with-dash-nid:1234",
             "urn:let-num-123:12345",
-            "urn:exactly-32-characters-1234567890:12345"
+            "urn:exactly-32-characters-1234567890:12345",
         };
         for (final String text : texts) {
             final URN urn = URN.create(text);

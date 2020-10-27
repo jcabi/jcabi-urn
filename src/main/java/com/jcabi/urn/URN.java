@@ -31,9 +31,6 @@ package com.jcabi.urn;
 
 import com.jcabi.aspects.Immutable;
 import com.jcabi.aspects.Tv;
-import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -41,6 +38,8 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.Map;
 import java.util.TreeMap;
+import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Uniform Resource Name (URN) as in

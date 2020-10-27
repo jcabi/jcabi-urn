@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2012-2017, jcabi.com
  * All rights reserved.
  *
@@ -33,11 +33,11 @@ import java.util.UUID;
 
 /**
  * Mocker of {@link URN}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
+ * author Yegor Bugayenko (yegor256@gmail.com)
+ * version $Id$
  * @since 0.6
  */
-public final class URNMocker {
+public final class UrnMocker {
 
     /**
      * Namespace ID.
@@ -52,7 +52,7 @@ public final class URNMocker {
     /**
      * Public ctor.
      */
-    public URNMocker() {
+    public UrnMocker() {
         this.nid = "test";
         this.nss = UUID.randomUUID().toString();
     }
@@ -62,7 +62,7 @@ public final class URNMocker {
      * @param name The namespace
      * @return This object
      */
-    public URNMocker withNid(final String name) {
+    public UrnMocker withNid(final String name) {
         this.nid = name;
         return this;
     }
@@ -72,7 +72,7 @@ public final class URNMocker {
      * @param text The nss
      * @return This object
      */
-    public URNMocker withNss(final String text) {
+    public UrnMocker withNss(final String text) {
         this.nss = text;
         return this;
     }

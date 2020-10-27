@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2012-2017, jcabi.com
  * All rights reserved.
  *
@@ -31,9 +31,6 @@ package com.jcabi.urn;
 
 import com.jcabi.aspects.Immutable;
 import com.jcabi.aspects.Tv;
-import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -41,6 +38,8 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.Map;
 import java.util.TreeMap;
+import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Uniform Resource Name (URN) as in
@@ -56,15 +55,16 @@ import java.util.TreeMap;
  * It will become compliant in one of our future versions. Once it becomes
  * fully compliant this notice will be removed.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
+ * author Yegor Bugayenko (yegor256@gmail.com)
+ * version $Id$
  * @since 0.6
  * @see <a href="http://tools.ietf.org/html/rfc2141">RFC 2141</a>
  */
 @Immutable
 @EqualsAndHashCode
 @SuppressWarnings({
-    "PMD.TooManyMethods", "PMD.UseConcurrentHashMap", "PMD.GodClass"
+    "PMD.TooManyMethods", "PMD.UseConcurrentHashMap",
+    "PMD.GodClass", "PMD.OnlyOneConstructorShouldDoInitialization"
 })
 public final class URN implements Comparable<URN>, Serializable {
 
@@ -118,6 +118,7 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param text The text of the URN
      * @throws URISyntaxException If syntax is not correct
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public URN(final String text) throws URISyntaxException {
         if (text == null) {
             throw new IllegalArgumentException("text can't be NULL");
@@ -134,8 +135,9 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param nid The namespace ID
      * @param nss The namespace specific string
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public URN(final String nid, final String nss) {
-        validateNID(nid);
+        validateNid(nid);
         if (nss == null) {
             throw new IllegalArgumentException("NSS can't be NULL");
         }
@@ -159,6 +161,7 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param text The text of the URN
      * @return The URN created
      */
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
     public static URN create(final String text) {
         if (text == null) {
             throw new IllegalArgumentException("URN can't be NULL");
@@ -185,6 +188,7 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param text The text to validate
      * @return Yes of no
      */
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
     public static boolean isValid(final String text) {
         boolean valid = true;
         try {
@@ -353,21 +357,28 @@ public final class URN implements Comparable<URN>, Serializable {
             );
         }
         final String nid = this.nid();
-        validateNID(nid);
+        validateNid(nid);
     }
 
-    private static void validateNID(final String nid) throws IllegalArgumentException {
+    /**
+     * Validate the nid part of the URN.
+     * It cannot be empty and can hold 1-31 lowercase characters and dashes.
+     * The first character must be a letter.
+     * @param nid The nid part of the urn.
+     * @throws IllegalArgumentException If an invalid nid was supplied
+     */
+    private static void validateNid(final String nid) throws IllegalArgumentException {
         if (nid == null) {
             throw new IllegalArgumentException("NID can't be NULL");
         }
         if (!nid.matches("^[a-z][a-z-]{0,30}$")) {
             throw new IllegalArgumentException(
-                    String.format("NID '%s' can contain up to 31 low case letters or a dash (not the first character)", nid)
+            String.format("NID '%s' can contain up to 31 low case letters or dashes.", nid)
             );
         }
         if (StringUtils.equalsIgnoreCase(URN.PREFIX, nid)) {
             throw new IllegalArgumentException(
-                    "NID can't be 'urn' according to RFC 2141, section 2.1"
+                "NID can't be 'urn' according to RFC 2141, section 2.1"
             );
         }
     }
@@ -378,7 +389,7 @@ public final class URN implements Comparable<URN>, Serializable {
      * @return The map of values
      */
     private static Map<String, String> demap(final String urn) {
-        final Map<String, String> map = new TreeMap<String, String>();
+        final Map<String, String> map = new TreeMap<>();
         final String[] sectors = StringUtils.split(urn, '?');
         if (sectors.length == 2) {
             final String[] parts = StringUtils.split(sectors[1], '&');

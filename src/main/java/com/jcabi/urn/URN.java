@@ -356,7 +356,7 @@ public final class URN implements Comparable<URN>, Serializable {
         validateNID(nid);
     }
 
-    private static void validateNID(String nid) throws IllegalArgumentException {
+    private static void validateNID(final String nid) throws IllegalArgumentException {
         if (nid == null) {
             throw new IllegalArgumentException("NID can't be NULL");
         }
@@ -457,7 +457,7 @@ public final class URN implements Comparable<URN>, Serializable {
         return chr >= 'A' && chr <= 'Z'
             || chr >= '0' && chr <= '9'
             || chr >= 'a' && chr <= 'z'
-            || (chr == '/') || chr == '-';
+            || chr == '/' || chr == '-';
     }
 
 }

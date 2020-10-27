@@ -1,3 +1,4 @@
+package com.jcabi.urn;
 /**
  * Copyright (c) 2012-2017, jcabi.com
  * All rights reserved.
@@ -27,7 +28,6 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.jcabi.urn;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.hamcrest.MatcherAssert;
@@ -35,7 +35,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -50,7 +49,12 @@ import java.util.List;
  * @since 0.6
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class URNTest {
+public final class UrnTest {
+
+    /**
+     * Test NSS variable used in various test cases.
+     */
+    private static final String TEST_NSS = "some-test-nss";
 
     /**
      * URN can be instantiated from plain text.
@@ -85,7 +89,7 @@ public final class URNTest {
     @Test
     public void throwsExceptionWhenTextIsNull() {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new URN(null));
+            () -> new URN(null));
     }
 
     /**
@@ -108,7 +112,7 @@ public final class URNTest {
     @Test
     public void throwsExceptionWhenNidIsNull() {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new URN(null, "some-test-nss"));
+            () -> new URN(null, UrnTest.TEST_NSS));
     }
 
     /**
@@ -117,7 +121,7 @@ public final class URNTest {
     @Test
     public void throwsExceptionWhenNidStartsWithDash() {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new URN("-invalid", "some-test-nss"));
+            () -> new URN("-invalid", UrnTest.TEST_NSS));
     }
 
     /**
@@ -126,7 +130,7 @@ public final class URNTest {
     @Test
     public void throwsExceptionWhenNidIsInvalid() {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new URN("invalid:nid", "some-test-nss"));
+            () -> new URN("invalid:nid", UrnTest.TEST_NSS));
     }
 
     /**
@@ -135,7 +139,7 @@ public final class URNTest {
     @Test
     public void throwsExceptionWhenNssIsNull() {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new URN("namespace1", null));
+            () -> new URN("namespace1", null));
     }
 
     /**
@@ -190,7 +194,7 @@ public final class URNTest {
     @Test
     public void catchesIncorrectURNSyntax() {
         Assertions.assertThrows(URISyntaxException.class,
-                () -> new URN("some incorrect name"));
+            () -> new URN("some incorrect name"));
     }
 
     /**
@@ -214,6 +218,8 @@ public final class URNTest {
             "urn:verylongnamespaceid:",
             "urn:a:?alpha=50*",
             "urn:a:b/c/d",
+            "urn:multiple:colon:urn:1234",
+            "urn:with-dash-nid:1234",
         };
         for (final String text : texts) {
             final URN urn = URN.create(text);

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2012-2017, jcabi.com
  * All rights reserved.
  *
@@ -37,18 +37,24 @@ import java.util.List;
 import org.apache.commons.lang3.SerializationUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Uniform Resource Name (URN), tests.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
+ * author Yegor Bugayenko (yegor256@gmail.com)
+ * version $Id$
  * @since 0.6
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class URNTest {
+public final class UrnTest {
+
+    /**
+     * Test NSS variable used in various test cases.
+     */
+    private static final String TEST_NSS = "some-test-nss";
 
     /**
      * URN can be instantiated from plain text.
@@ -56,8 +62,8 @@ public final class URNTest {
      */
     @Test
     public void instantiatesFromText() throws Exception {
-        final URN urn = new URN("urn:jcabi:jeff%20lebowski%2540");
-        MatcherAssert.assertThat(urn.nid(), Matchers.equalTo("jcabi"));
+        final URN urn = new URN("urn:jcabi-nid:jeff%20lebowski%2540");
+        MatcherAssert.assertThat(urn.nid(), Matchers.equalTo("jcabi-nid"));
         MatcherAssert.assertThat(
             urn.nss(),
             Matchers.equalTo("jeff lebowski%40")
@@ -70,20 +76,19 @@ public final class URNTest {
      */
     @Test
     public void encodesNssAsRequiredByUrlSyntax() throws Exception {
-        final URN urn = new URN("test", "walter sobchak!");
+        final URN urn = new URN("test-nid", "walter sobchak!");
         MatcherAssert.assertThat(
             urn.toString(),
-            Matchers.equalTo("urn:test:walter%20sobchak%21")
+            Matchers.equalTo("urn:test-nid:walter%20sobchak%21")
         );
     }
 
     /**
      * URN can throw exception when text is NULL.
-     * @throws Exception If there is some problem inside
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsExceptionWhenTextIsNull() throws Exception {
-        new URN(null);
+    @Test
+    public void throwsExceptionWhenTextIsNull() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new URN(null));
     }
 
     /**
@@ -102,20 +107,42 @@ public final class URNTest {
 
     /**
      * URN can throw exception when NID is NULL.
-     * @throws Exception If there is some problem inside
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsExceptionWhenNidIsNull() throws Exception {
-        new URN(null, "some-test-nss");
+    @Test
+    public void throwsExceptionWhenNidIsNull() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class, () -> new URN(null, UrnTest.TEST_NSS)
+        );
+    }
+
+    /**
+     * URN can throw exception when NID is invalid (dash not allowed as first character).
+     */
+    @Test
+    public void throwsExceptionWhenNidStartsWithDash() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class, () -> new URN("-invalid", UrnTest.TEST_NSS)
+        );
+    }
+
+    /**
+     * URN can throw exception when NID is invalid (colon not allowed).
+     */
+    @Test
+    public void throwsExceptionWhenNidIsInvalid() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class, () -> new URN("invalid:nid", UrnTest.TEST_NSS)
+        );
     }
 
     /**
      * URN can throw exception when NSS is NULL.
-     * @throws Exception If there is some problem inside
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsExceptionWhenNssIsNull() throws Exception {
-        new URN("namespace1", null);
+    @Test
+    public void throwsExceptionWhenNssIsNull() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class, () -> new URN("namespace1", null)
+        );
     }
 
     /**
@@ -166,11 +193,12 @@ public final class URNTest {
 
     /**
      * URN can catch incorrect syntax.
-     * @throws Exception If there is some problem inside
      */
-    @Test(expected = URISyntaxException.class)
-    public void catchesIncorrectURNSyntax() throws Exception {
-        new URN("some incorrect name");
+    @Test
+    public void catchesIncorrectUrnSyntax() {
+        Assertions.assertThrows(
+            URISyntaxException.class, () -> new URN("some incorrect name")
+        );
     }
 
     /**
@@ -178,7 +206,7 @@ public final class URNTest {
      * @throws Exception If there is some problem inside
      */
     @Test
-    public void passesCorrectURNSyntax() throws Exception {
+    public void passesCorrectUrnSyntax() throws Exception {
         final String[] texts = {
             "URN:hello:test",
             "urn:foo:some%20text%20with%20spaces",
@@ -194,6 +222,10 @@ public final class URNTest {
             "urn:verylongnamespaceid:",
             "urn:a:?alpha=50*",
             "urn:a:b/c/d",
+            "urn:multiple:colon:urn:1234",
+            "urn:with-dash-nid:1234",
+            "urn:let-num-123:12345",
+            "urn:exactly-32-characters-1234567890:12345",
         };
         for (final String text : texts) {
             final URN urn = URN.create(text);
@@ -210,7 +242,7 @@ public final class URNTest {
      * @throws Exception If there is some problem inside
      */
     @Test
-    public void throwsExceptionForIncorrectURNSyntax() throws Exception {
+    public void throwsExceptionForIncorrectUrnSyntax() throws Exception {
         final String[] texts = {
             "abc",
             "",
@@ -241,27 +273,31 @@ public final class URNTest {
      * @throws Exception If there is some problem inside
      */
     @Test
-    public void emptyURNIsAFirstClassCitizen() throws Exception {
+    public void emptyUrnIsAFirstClassCitizen() throws Exception {
         final URN urn = new URN();
         MatcherAssert.assertThat(urn.isEmpty(), Matchers.equalTo(true));
     }
 
     /**
      * URN can be "empty" only in one form.
-     * @throws Exception If there is some problem inside
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void emptyURNHasOnlyOneVariant() throws Exception {
-        new URN("void", "it-is-impossible-to-have-any-NSS-here");
+    @Test
+    public void emptyUrnHasOnlyOneVariant() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new URN("void", "it-is-impossible-to-have-any-NSS-here")
+        );
     }
 
     /**
      * URN can be "empty" only in one form, with from-text ctor.
-     * @throws Exception If there is some problem inside
      */
-    @Test(expected = URISyntaxException.class)
-    public void emptyURNHasOnlyOneVariantWithTextCtor() throws Exception {
-        new URN("urn:void:it-is-impossible-to-have-any-NSS-here");
+    @Test
+    public void emptyUrnHasOnlyOneVariantWithTextCtor() {
+        Assertions.assertThrows(
+            URISyntaxException.class,
+            () -> new URN("urn:void:it-is-impossible-to-have-any-NSS-here")
+        );
     }
 
     /**
@@ -269,7 +305,7 @@ public final class URNTest {
      * @throws Exception If there is some problem inside
      */
     @Test
-    public void matchesPatternWithAnotherURN() throws Exception {
+    public void matchesPatternWithAnotherUrn() throws Exception {
         MatcherAssert.assertThat(
             "matches",
             new URN("urn:test:file").matches("urn:test:*")
@@ -349,8 +385,8 @@ public final class URNTest {
     @Test
     public void mocksUrnWithAMocker() throws Exception {
         MatcherAssert.assertThat(
-            new URNMocker().mock(),
-            Matchers.not(Matchers.equalTo(new URNMocker().mock()))
+            new UrnMocker().mock(),
+            Matchers.not(Matchers.equalTo(new UrnMocker().mock()))
         );
     }
 
@@ -358,10 +394,10 @@ public final class URNTest {
      * URN can be lexical equivalent according to RFC 2144, section 6.
      * @throws Exception if URN parsing fails.
      * @see <a href="http://www.ietf.org/rfc/rfc2141.txt"/>
-     * @see https://github.com/jcabi/jcabi-urn/issues/8
+     * @see <a href="https://github.com/jcabi/jcabi-urn/issues/8"/>
      */
     @Test
-    @Ignore
+    @Disabled
     public void checkLexicalEquivalence() throws Exception {
         final String[] urns = {
             "URN:foo:a123,456",

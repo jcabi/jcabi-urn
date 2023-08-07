@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"com.jcabi.urn","c":"URNMocker","l":"mock()"},{"p":"com.jcabi.urn","c":"URNMocker","l":"URNMocker()","url":"%3Cinit%3E()"},{"p":"com.jcabi.urn","c":"URNMocker","l":"withNid(String)","url":"withNid(java.lang.String)"},{"p":"com.jcabi.urn","c":"URNMocker","l":"withNss(String)","url":"withNss(java.lang.String)"}]

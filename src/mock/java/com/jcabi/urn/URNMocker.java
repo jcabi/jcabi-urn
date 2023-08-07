@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2012-2017, jcabi.com
+/*
+ * Copyright (c) 2012-2023, jcabi.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,9 +33,9 @@ import java.util.UUID;
 
 /**
  * Mocker of {@link URN}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
+ *
  * @since 0.6
+ * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
 public final class URNMocker {
 

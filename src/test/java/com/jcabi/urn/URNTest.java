@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2012-2017, jcabi.com
+/*
+ * Copyright (c) 2012-2023, jcabi.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,25 +37,25 @@ import java.util.List;
 import org.apache.commons.lang3.SerializationUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Uniform Resource Name (URN), tests.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.6
+ * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class URNTest {
+final class URNTest {
 
     /**
      * URN can be instantiated from plain text.
      * @throws Exception If there is some problem inside
      */
     @Test
-    public void instantiatesFromText() throws Exception {
+    void instantiatesFromText() throws Exception {
         final URN urn = new URN("urn:jcabi:jeff%20lebowski%2540");
         MatcherAssert.assertThat(urn.nid(), Matchers.equalTo("jcabi"));
         MatcherAssert.assertThat(
@@ -66,10 +66,9 @@ public final class URNTest {
 
     /**
      * URN can encode NSS properly.
-     * @throws Exception If there is some problem inside
      */
     @Test
-    public void encodesNssAsRequiredByUrlSyntax() throws Exception {
+    void encodesNssAsRequiredByUrlSyntax() {
         final URN urn = new URN("test", "walter sobchak!");
         MatcherAssert.assertThat(
             urn.toString(),
@@ -79,19 +78,20 @@ public final class URNTest {
 
     /**
      * URN can throw exception when text is NULL.
-     * @throws Exception If there is some problem inside
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsExceptionWhenTextIsNull() throws Exception {
-        new URN(null);
+    @Test
+    void throwsExceptionWhenTextIsNull() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new URN(null)
+        );
     }
 
     /**
      * URN can be instantiated from components.
-     * @throws Exception If there is some problem inside
      */
     @Test
-    public void instantiatesFromComponents() throws Exception {
+    void instantiatesFromComponents() {
         final String nid = "foo";
         final String nss = "\u8416 & \u8415 *&^%$#@!-~`\"'";
         final URN urn = new URN(nid, nss);
@@ -102,20 +102,24 @@ public final class URNTest {
 
     /**
      * URN can throw exception when NID is NULL.
-     * @throws Exception If there is some problem inside
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsExceptionWhenNidIsNull() throws Exception {
-        new URN(null, "some-test-nss");
+    @Test
+    void throwsExceptionWhenNidIsNull() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new URN(null, "some-test-nss")
+        );
     }
 
     /**
      * URN can throw exception when NSS is NULL.
-     * @throws Exception If there is some problem inside
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsExceptionWhenNssIsNull() throws Exception {
-        new URN("namespace1", null);
+    @Test
+    void throwsExceptionWhenNssIsNull() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new URN("namespace1", null)
+        );
     }
 
     /**
@@ -123,7 +127,7 @@ public final class URNTest {
      * @throws Exception If there is some problem inside
      */
     @Test
-    public void comparesForEquivalence() throws Exception {
+    void comparesForEquivalence() throws Exception {
         final String text = "urn:foo:some-other-specific-string";
         final URN first = new URN(text);
         final URN second = new URN(text);
@@ -135,7 +139,7 @@ public final class URNTest {
      * @throws Exception If there is some problem inside
      */
     @Test
-    public void comparesForEquivalenceWithUri() throws Exception {
+    void comparesForEquivalenceWithUri() throws Exception {
         final String text = "urn:foo:somespecificstring";
         final URN first = new URN(text);
         final URI second = new URI(text);
@@ -147,7 +151,7 @@ public final class URNTest {
      * @throws Exception If there is some problem inside
      */
     @Test
-    public void comparesForEquivalenceWithString() throws Exception {
+    void comparesForEquivalenceWithString() throws Exception {
         final String text = "urn:foo:sometextastext";
         final URN first = new URN(text);
         MatcherAssert.assertThat(first.equals(text), Matchers.is(false));
@@ -158,7 +162,7 @@ public final class URNTest {
      * @throws Exception If there is some problem inside
      */
     @Test
-    public void convertsToString() throws Exception {
+    void convertsToString() throws Exception {
         final String text = "urn:foo:textofurn";
         final URN urn = new URN(text);
         MatcherAssert.assertThat(urn.toString(), Matchers.equalTo(text));
@@ -166,19 +170,20 @@ public final class URNTest {
 
     /**
      * URN can catch incorrect syntax.
-     * @throws Exception If there is some problem inside
      */
-    @Test(expected = URISyntaxException.class)
-    public void catchesIncorrectURNSyntax() throws Exception {
-        new URN("some incorrect name");
+    @Test
+    void catchesIncorrectURNSyntax() {
+        Assertions.assertThrows(
+            URISyntaxException.class,
+            () -> new URN("some incorrect name")
+        );
     }
 
     /**
      * URN can pass correct syntax.
-     * @throws Exception If there is some problem inside
      */
     @Test
-    public void passesCorrectURNSyntax() throws Exception {
+    void passesCorrectURNSyntax() {
         final String[] texts = {
             "URN:hello:test",
             "urn:foo:some%20text%20with%20spaces",
@@ -207,10 +212,9 @@ public final class URNTest {
 
     /**
      * URN can throw exception for incorrect syntax.
-     * @throws Exception If there is some problem inside
      */
     @Test
-    public void throwsExceptionForIncorrectURNSyntax() throws Exception {
+    void throwsExceptionForIncorrectURNSyntax() {
         final String[] texts = {
             "abc",
             "",
@@ -238,30 +242,33 @@ public final class URNTest {
 
     /**
      * URN can be "empty".
-     * @throws Exception If there is some problem inside
      */
     @Test
-    public void emptyURNIsAFirstClassCitizen() throws Exception {
+    void emptyURNIsAFirstClassCitizen() {
         final URN urn = new URN();
         MatcherAssert.assertThat(urn.isEmpty(), Matchers.equalTo(true));
     }
 
     /**
      * URN can be "empty" only in one form.
-     * @throws Exception If there is some problem inside
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void emptyURNHasOnlyOneVariant() throws Exception {
-        new URN("void", "it-is-impossible-to-have-any-NSS-here");
+    @Test
+    void emptyURNHasOnlyOneVariant() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new URN("void", "it-is-impossible-to-have-any-NSS-here")
+        );
     }
 
     /**
      * URN can be "empty" only in one form, with from-text ctor.
-     * @throws Exception If there is some problem inside
      */
-    @Test(expected = URISyntaxException.class)
-    public void emptyURNHasOnlyOneVariantWithTextCtor() throws Exception {
-        new URN("urn:void:it-is-impossible-to-have-any-NSS-here");
+    @Test
+    void emptyURNHasOnlyOneVariantWithTextCtor() {
+        Assertions.assertThrows(
+            URISyntaxException.class,
+            () -> new URN("urn:void:it-is-impossible-to-have-any-NSS-here")
+        );
     }
 
     /**
@@ -269,7 +276,7 @@ public final class URNTest {
      * @throws Exception If there is some problem inside
      */
     @Test
-    public void matchesPatternWithAnotherURN() throws Exception {
+    void matchesPatternWithAnotherURN() throws Exception {
         MatcherAssert.assertThat(
             "matches",
             new URN("urn:test:file").matches("urn:test:*")
@@ -281,7 +288,7 @@ public final class URNTest {
      * @throws Exception If there is some problem inside
      */
     @Test
-    public void addAndRetrievesParamsByName() throws Exception {
+    void addAndRetrievesParamsByName() throws Exception {
         final String name = "crap";
         final String value = "@!$#^\u0433iu**76\u0945";
         final URN urn = new URN("urn:test:x?bb")
@@ -300,7 +307,7 @@ public final class URNTest {
      * @throws Exception If there is some problem inside
      */
     @Test
-    public void fetchesBodyWithoutParams() throws Exception {
+    void fetchesBodyWithoutParams() throws Exception {
         MatcherAssert.assertThat(
             new URN("urn:test:something?a=9&b=4").pure(),
             Matchers.equalTo(new URN("urn:test:something"))
@@ -312,7 +319,7 @@ public final class URNTest {
      * @throws Exception If there is some problem inside
      */
     @Test
-    public void serializesToBytes() throws Exception {
+    void serializesToBytes() throws Exception {
         final URN urn = new URN("urn:test:some-data-to-serialize");
         final byte[] bytes = SerializationUtils.serialize(urn);
         MatcherAssert.assertThat(
@@ -326,7 +333,7 @@ public final class URNTest {
      * @throws Exception If there is some problem inside
      */
     @Test
-    public void persistsOrderingOfParams() throws Exception {
+    void persistsOrderingOfParams() throws Exception {
         final List<String> params = Arrays.asList(
             "ft", "sec", "9", "123", "a1b2c3", "A", "B", "C"
         );
@@ -344,10 +351,9 @@ public final class URNTest {
 
     /**
      * URN can be mocked.
-     * @throws Exception If there is some problem inside
      */
     @Test
-    public void mocksUrnWithAMocker() throws Exception {
+    void mocksUrnWithAMocker() {
         MatcherAssert.assertThat(
             new URNMocker().mock(),
             Matchers.not(Matchers.equalTo(new URNMocker().mock()))
@@ -356,13 +362,12 @@ public final class URNTest {
 
     /**
      * URN can be lexical equivalent according to RFC 2144, section 6.
-     * @throws Exception if URN parsing fails.
      * @see <a href="http://www.ietf.org/rfc/rfc2141.txt"/>
-     * @see https://github.com/jcabi/jcabi-urn/issues/8
+     * @see <a href="https://github.com/jcabi/jcabi-urn/issues/8">issue</a>
      */
     @Test
-    @Ignore
-    public void checkLexicalEquivalence() throws Exception {
+    @Disabled
+    void checkLexicalEquivalence() {
         final String[] urns = {
             "URN:foo:a123,456",
             "urn:foo:a123,456",

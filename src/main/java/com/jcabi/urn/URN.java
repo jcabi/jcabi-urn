@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2012-2017, jcabi.com
+/*
+ * Copyright (c) 2012-2023, jcabi.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,6 @@
 package com.jcabi.urn;
 
 import com.jcabi.aspects.Immutable;
-import com.jcabi.aspects.Tv;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -55,15 +54,15 @@ import org.apache.commons.lang3.StringUtils;
  * It will become compliant in one of our future versions. Once it becomes
  * fully compliant this notice will be removed.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.6
  * @see <a href="http://tools.ietf.org/html/rfc2141">RFC 2141</a>
+ * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
 @Immutable
 @EqualsAndHashCode
 @SuppressWarnings({
-    "PMD.TooManyMethods", "PMD.UseConcurrentHashMap", "PMD.GodClass"
+    "PMD.TooManyMethods", "PMD.UseConcurrentHashMap", "PMD.GodClass",
+    "PMD.OnlyOneConstructorShouldDoInitialization"
 })
 public final class URN implements Comparable<URN>, Serializable {
 
@@ -117,6 +116,7 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param text The text of the URN
      * @throws URISyntaxException If syntax is not correct
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public URN(final String text) throws URISyntaxException {
         if (text == null) {
             throw new IllegalArgumentException("text can't be NULL");
@@ -133,6 +133,7 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param nid The namespace ID
      * @param nss The namespace specific string
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public URN(final String nid, final String nss) {
         if (nid == null) {
             throw new IllegalArgumentException("NID can't be NULL");
@@ -160,6 +161,7 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param text The text of the URN
      * @return The URN created
      */
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
     public static URN create(final String text) {
         if (text == null) {
             throw new IllegalArgumentException("URN can't be NULL");
@@ -186,6 +188,7 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param text The text to validate
      * @return Yes of no
      */
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
     public static boolean isValid(final String text) {
         boolean valid = true;
         try {
@@ -375,7 +378,7 @@ public final class URN implements Comparable<URN>, Serializable {
      * @return The map of values
      */
     private static Map<String, String> demap(final String urn) {
-        final Map<String, String> map = new TreeMap<String, String>();
+        final Map<String, String> map = new TreeMap<>();
         final String[] sectors = StringUtils.split(urn, '?');
         if (sectors.length == 2) {
             final String[] parts = StringUtils.split(sectors[1], '&');
@@ -403,7 +406,7 @@ public final class URN implements Comparable<URN>, Serializable {
      * @return The suffix of URN, starting with "?"
      */
     private static String enmap(final Map<String, String> params) {
-        final StringBuilder query = new StringBuilder(Tv.HUNDRED);
+        final StringBuilder query = new StringBuilder(100);
         if (!params.isEmpty()) {
             query.append('?');
             boolean first = true;
@@ -433,7 +436,7 @@ public final class URN implements Comparable<URN>, Serializable {
         } catch (final UnsupportedEncodingException ex) {
             throw new IllegalStateException(ex);
         }
-        final StringBuilder encoded = new StringBuilder(Tv.HUNDRED);
+        final StringBuilder encoded = new StringBuilder(100);
         for (final byte chr : bytes) {
             if (URN.allowed(chr)) {
                 encoded.append((char) chr);
@@ -454,7 +457,7 @@ public final class URN implements Comparable<URN>, Serializable {
         return chr >= 'A' && chr <= 'Z'
             || chr >= '0' && chr <= '9'
             || chr >= 'a' && chr <= 'z'
-            || (chr == '/') || chr == '-';
+            || chr == '/' || chr == '-';
     }
 
 }

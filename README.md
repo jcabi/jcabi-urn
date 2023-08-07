@@ -1,10 +1,8 @@
-<img src="http://img.jcabi.com/logo-square.svg" width="64px" height="64px" />
+<img src="https://www.jcabi.com/logo-square.svg" width="64px" height="64px" />
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
-[![Managed by Zerocracy](https://www.0crat.com/badge/C3RUBL5H9.svg)](https://www.0crat.com/p/C3RUBL5H9)
 [![DevOps By Rultor.com](http://www.rultor.com/b/jcabi/jcabi-urn)](http://www.rultor.com/p/jcabi/jcabi-urn)
 
-[![Build Status](https://travis-ci.org/jcabi/jcabi-urn.svg?branch=master)](https://travis-ci.org/jcabi/jcabi-urn)
 [![PDD status](http://www.0pdd.com/svg?name=jcabi/jcabi-urn)](http://www.0pdd.com/p?name=jcabi/jcabi-urn)
 [![Build status](https://ci.appveyor.com/api/projects/status/9eu1jjs99bfji7da/branch/master?svg=true)](https://ci.appveyor.com/project/yegor256/jcabi-urn/branch/master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.jcabi/jcabi-urn/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.jcabi/jcabi-urn)
@@ -25,11 +23,6 @@ public class Main {
   }
 }
 ```
-
-## Questions?
-
-If you have any questions about the framework, or something doesn't work as expected,
-please [submit an issue here](https://github.com/yegor256/jcabi/issues/new).
 
 ## How to contribute?
 

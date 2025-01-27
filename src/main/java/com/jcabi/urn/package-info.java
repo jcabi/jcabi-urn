@@ -39,8 +39,6 @@
  *   &lt;artifactId&gt;jcabi-urn&lt;/artifactId&gt;
  * &lt;/dependency&gt;</pre>
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.6
  * @see <a href="http://www.jcabi.com/jcabi-urn">project website</a>
  */

@@ -1,12 +1,12 @@
 <img src="https://www.jcabi.com/logo-square.svg" width="64px" height="64px" />
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
-[![DevOps By Rultor.com](http://www.rultor.com/b/jcabi/jcabi-urn)](http://www.rultor.com/p/jcabi/jcabi-urn)
+[![DevOps By Rultor.com](https://www.rultor.com/b/jcabi/jcabi-urn)](https://www.rultor.com/p/jcabi/jcabi-urn)
 
 [![mvn](https://github.com/jcabi/jcabi-urn/actions/workflows/mvn.yml/badge.svg)](https://github.com/jcabi/jcabi-urn/actions/workflows/mvn.yml)
-[![PDD status](http://www.0pdd.com/svg?name=jcabi/jcabi-urn)](http://www.0pdd.com/p?name=jcabi/jcabi-urn)
+[![PDD status](https://www.0pdd.com/svg?name=jcabi/jcabi-urn)](https://www.0pdd.com/p?name=jcabi/jcabi-urn)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.jcabi/jcabi-urn/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.jcabi/jcabi-urn)
-[![Javadoc](https://javadoc.io/badge/com.jcabi/jcabi-urn.svg)](http://www.javadoc.io/doc/com.jcabi/jcabi-urn)
+[![Javadoc](https://javadoc.io/badge/com.jcabi/jcabi-urn.svg)](https://www.javadoc.io/doc/com.jcabi/jcabi-urn)
 
 More details are here: [urn.jcabi.com](http://urn.jcabi.com/index.html)
 

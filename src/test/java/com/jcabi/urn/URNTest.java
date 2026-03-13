@@ -26,15 +26,27 @@ import org.junit.jupiter.api.Test;
 final class URNTest {
 
     /**
-     * URN can be instantiated from plain text.
+     * URN can be instantiated from plain text and provides correct NID.
      * @throws Exception If there is some problem inside
      */
     @Test
-    void instantiatesFromText() throws Exception {
-        final URN urn = new URN("urn:jcabi:jeff%20lebowski%2540");
-        MatcherAssert.assertThat(urn.nid(), Matchers.equalTo("jcabi"));
+    void instantiatesFromTextWithCorrectNid() throws Exception {
         MatcherAssert.assertThat(
-            urn.nss(),
+            "should provide correct NID",
+            new URN("urn:jcabi:jeff%20lebowski%2540").nid(),
+            Matchers.equalTo("jcabi")
+        );
+    }
+
+    /**
+     * URN can be instantiated from plain text and provides correct NSS.
+     * @throws Exception If there is some problem inside
+     */
+    @Test
+    void instantiatesFromTextWithCorrectNss() throws Exception {
+        MatcherAssert.assertThat(
+            "should provide correct NSS",
+            new URN("urn:jcabi:jeff%20lebowski%2540").nss(),
             Matchers.equalTo("jeff lebowski%40")
         );
     }
@@ -44,9 +56,9 @@ final class URNTest {
      */
     @Test
     void encodesNssAsRequiredByUrlSyntax() {
-        final URN urn = new URN("test", "walter sobchak!");
         MatcherAssert.assertThat(
-            urn.toString(),
+            "should encode NSS correctly",
+            new URN("test", "walter sobchak!").toString(),
             Matchers.equalTo("urn:test:walter%20sobchak%21")
         );
     }
@@ -63,16 +75,39 @@ final class URNTest {
     }
 
     /**
-     * URN can be instantiated from components.
+     * URN can be instantiated from components with correct NID.
      */
     @Test
-    void instantiatesFromComponents() {
-        final String nid = "foo";
-        final String nss = "\u8416 & \u8415 *&^%$#@!-~`\"'";
-        final URN urn = new URN(nid, nss);
-        MatcherAssert.assertThat(urn.nid(), Matchers.equalTo(nid));
-        MatcherAssert.assertThat(urn.nss(), Matchers.equalTo(nss));
-        MatcherAssert.assertThat(urn.toURI(), Matchers.instanceOf(URI.class));
+    void instantiatesFromComponentsWithCorrectNid() {
+        MatcherAssert.assertThat(
+            "should preserve NID",
+            new URN("foo", "\u8416 test").nid(),
+            Matchers.equalTo("foo")
+        );
+    }
+
+    /**
+     * URN can be instantiated from components with correct NSS.
+     */
+    @Test
+    void instantiatesFromComponentsWithCorrectNss() {
+        MatcherAssert.assertThat(
+            "should preserve NSS",
+            new URN("bar", "\u8416 & \u8415 *&^%$#@!-~`\"'").nss(),
+            Matchers.equalTo("\u8416 & \u8415 *&^%$#@!-~`\"'")
+        );
+    }
+
+    /**
+     * URN can be converted to URI.
+     */
+    @Test
+    void convertsToUri() {
+        MatcherAssert.assertThat(
+            "should convert to URI",
+            new URN("baz", "test").toURI(),
+            Matchers.instanceOf(URI.class)
+        );
     }
 
     /**
@@ -103,10 +138,11 @@ final class URNTest {
      */
     @Test
     void comparesForEquivalence() throws Exception {
-        final String text = "urn:foo:some-other-specific-string";
-        final URN first = new URN(text);
-        final URN second = new URN(text);
-        MatcherAssert.assertThat(first, Matchers.equalTo(second));
+        MatcherAssert.assertThat(
+            "should be equal",
+            new URN("urn:foo:some-other-specific-string"),
+            Matchers.equalTo(new URN("urn:foo:some-other-specific-string"))
+        );
     }
 
     /**
@@ -115,10 +151,13 @@ final class URNTest {
      */
     @Test
     void comparesForEquivalenceWithUri() throws Exception {
-        final String text = "urn:foo:somespecificstring";
-        final URN first = new URN(text);
-        final URI second = new URI(text);
-        MatcherAssert.assertThat(first.equals(second), Matchers.is(false));
+        MatcherAssert.assertThat(
+            "should not be equal to URI",
+            new URN("urn:foo:somespecificstring").equals(
+                new URI("urn:foo:somespecificstring")
+            ),
+            Matchers.is(false)
+        );
     }
 
     /**
@@ -127,9 +166,11 @@ final class URNTest {
      */
     @Test
     void comparesForEquivalenceWithString() throws Exception {
-        final String text = "urn:foo:sometextastext";
-        final URN first = new URN(text);
-        MatcherAssert.assertThat(first.equals(text), Matchers.is(false));
+        MatcherAssert.assertThat(
+            "should not be equal to String",
+            new URN("urn:foo:sometextastext").equals("urn:foo:sometextastext"),
+            Matchers.is(false)
+        );
     }
 
     /**
@@ -138,9 +179,11 @@ final class URNTest {
      */
     @Test
     void convertsToString() throws Exception {
-        final String text = "urn:foo:textofurn";
-        final URN urn = new URN(text);
-        MatcherAssert.assertThat(urn.toString(), Matchers.equalTo(text));
+        MatcherAssert.assertThat(
+            "should convert to string",
+            new URN("urn:foo:textofurn").toString(),
+            Matchers.equalTo("urn:foo:textofurn")
+        );
     }
 
     /**
@@ -155,34 +198,41 @@ final class URNTest {
     }
 
     /**
-     * URN can pass correct syntax.
+     * URN can pass correct syntax and round-trip.
      */
     @Test
-    void passesCorrectURNSyntax() {
-        final String[] texts = {
-            "URN:hello:test",
-            "urn:foo:some%20text%20with%20spaces",
-            "urn:a:",
-            "urn:a:?alpha=50",
-            "urn:a:?boom",
-            "urn:a:test?123",
-            "urn:a:test?1a2b3c",
-            "urn:a:test?1A2B3C",
-            "urn:a:?alpha=abccde%20%45%4Fme",
-            "urn:woquo:ns:pa/procure/BalanceRecord?name=*",
-            "urn:a:?alpha=50&beta=u%20worksfine",
-            "urn:verylongnamespaceid:",
-            "urn:a:?alpha=50*",
-            "urn:a:b/c/d",
-        };
-        for (final String text : texts) {
-            final URN urn = URN.create(text);
-            MatcherAssert.assertThat(
-                URN.create(urn.toString()),
-                Matchers.equalTo(urn)
-            );
-            MatcherAssert.assertThat("is valid", URN.isValid(urn.toString()));
-        }
+    void passesCorrectURNSyntaxAndRoundTrips() {
+        MatcherAssert.assertThat(
+            "should round-trip all valid URNs",
+            Arrays.asList(
+                "URN:hello:test",
+                "urn:foo:some%20text%20with%20spaces",
+                "urn:a:",
+                "urn:a:?alpha=50",
+                "urn:a:?boom",
+                "urn:a:test?123",
+                "urn:a:test?1a2b3c",
+                "urn:a:test?1A2B3C",
+                "urn:a:?alpha=abccde%20%45%4Fme",
+                "urn:woquo:ns:pa/procure/BalanceRecord?name=*",
+                "urn:a:?alpha=50&beta=u%20worksfine",
+                "urn:verylongnamespaceid:",
+                "urn:a:?alpha=50*",
+                "urn:a:b/c/d"
+            ),
+            Matchers.everyItem(
+                Matchers.is(
+                    new org.hamcrest.CustomTypeSafeMatcher<String>("a round-trippable URN") {
+                        @Override
+                        protected boolean matchesSafely(final String text) {
+                            return URN.isValid(text)
+                                && URN.create(URN.create(text).toString())
+                                    .equals(URN.create(text));
+                        }
+                    }
+                )
+            )
+        );
     }
 
     /**
@@ -220,8 +270,11 @@ final class URNTest {
      */
     @Test
     void emptyURNIsAFirstClassCitizen() {
-        final URN urn = new URN();
-        MatcherAssert.assertThat(urn.isEmpty(), Matchers.equalTo(true));
+        MatcherAssert.assertThat(
+            "should be empty",
+            new URN().isEmpty(),
+            Matchers.equalTo(true)
+        );
     }
 
     /**
@@ -259,22 +312,46 @@ final class URNTest {
     }
 
     /**
-     * URN can add and retrieve params.
+     * URN can encode params in string representation.
      * @throws Exception If there is some problem inside
      */
     @Test
-    void addAndRetrievesParamsByName() throws Exception {
-        final String name = "crap";
-        final String value = "@!$#^\u0433iu**76\u0945";
-        final URN urn = new URN("urn:test:x?bb")
-            .param("bar", "\u8514 value?")
-            .param(name, value);
+    void encodesParamsInStringRepresentation() throws Exception {
         MatcherAssert.assertThat(
-            urn.toString(),
+            "should encode param correctly",
+            new URN("urn:test:x?bb")
+                .param("bar", "\u8514 value?")
+                .toString(),
             Matchers.containsString("bar=%E8%94%94%20value%3F")
         );
-        MatcherAssert.assertThat(urn.param("bb"), Matchers.equalTo(""));
-        MatcherAssert.assertThat(urn.param(name), Matchers.equalTo(value));
+    }
+
+    /**
+     * URN can retrieve empty param value.
+     * @throws Exception If there is some problem inside
+     */
+    @Test
+    void retrievesEmptyParamValue() throws Exception {
+        MatcherAssert.assertThat(
+            "should retrieve empty param",
+            new URN("urn:test:x?bb").param("bb"),
+            Matchers.equalTo("")
+        );
+    }
+
+    /**
+     * URN can retrieve unicode param value.
+     * @throws Exception If there is some problem inside
+     */
+    @Test
+    void retrievesUnicodeParamValue() throws Exception {
+        MatcherAssert.assertThat(
+            "should retrieve unicode param",
+            new URN("urn:test:x?bb")
+                .param("crap", "@!$#^\u0433iu**76\u0945")
+                .param("crap"),
+            Matchers.equalTo("@!$#^\u0433iu**76\u0945")
+        );
     }
 
     /**
@@ -295,11 +372,14 @@ final class URNTest {
      */
     @Test
     void serializesToBytes() throws Exception {
-        final URN urn = new URN("urn:test:some-data-to-serialize");
-        final byte[] bytes = SerializationUtils.serialize(urn);
         MatcherAssert.assertThat(
-            ((URN) SerializationUtils.deserialize(bytes)).toString(),
-            Matchers.equalTo(urn.toString())
+            "should deserialize to same value",
+            ((URN) SerializationUtils.deserialize(
+                SerializationUtils.serialize(
+                    new URN("urn:test:some-data-to-serialize")
+                )
+            )).toString(),
+            Matchers.equalTo("urn:test:some-data-to-serialize")
         );
     }
 

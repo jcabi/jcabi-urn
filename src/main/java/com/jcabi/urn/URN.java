@@ -29,14 +29,15 @@ import org.apache.commons.lang3.StringUtils;
  * It will become compliant in one of our future versions. Once it becomes
  * fully compliant this notice will be removed.
  *
- * @since 0.6
  * @see <a href="http://tools.ietf.org/html/rfc2141">RFC 2141</a>
+ * @since 0.6
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
 @Immutable
 @SuppressWarnings({
-    "PMD.TooManyMethods", "PMD.UseConcurrentHashMap", "PMD.GodClass",
-    "PMD.OnlyOneConstructorShouldDoInitialization"
+    "PMD.TooManyMethods", "PMD.GodClass",
+    "PMD.OnlyOneConstructorShouldDoInitialization",
+    "PMD.ConstructorOnlyInitializesOrCallOtherConstructors"
 })
 public final class URN implements Comparable<URN>, Serializable {
 
@@ -75,7 +76,6 @@ public final class URN implements Comparable<URN>, Serializable {
     /**
      * The URI.
      */
-    @SuppressWarnings("PMD.BeanMembersShouldSerialize")
     private final String uri;
 
     /**
@@ -90,7 +90,6 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param text The text of the URN
      * @throws URISyntaxException If syntax is not correct
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public URN(final String text) throws URISyntaxException {
         if (text == null) {
             throw new IllegalArgumentException("text can't be NULL");
@@ -107,7 +106,6 @@ public final class URN implements Comparable<URN>, Serializable {
      * @param nid The namespace ID
      * @param nss The namespace specific string
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public URN(final String nid, final String nss) {
         if (nid == null) {
             throw new IllegalArgumentException("NID can't be NULL");
@@ -204,8 +202,9 @@ public final class URN implements Comparable<URN>, Serializable {
         if (this.toString().equals(pattern)) {
             matches = true;
         } else if (pattern.endsWith("*")) {
-            final String body = pattern.substring(0, pattern.length() - 1);
-            matches = this.uri.startsWith(body);
+            matches = this.uri.startsWith(
+                pattern.substring(0, pattern.length() - 1)
+            );
         }
         return matches;
     }

@@ -11,8 +11,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
-import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -34,7 +34,6 @@ import org.apache.commons.lang3.StringUtils;
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
 @Immutable
-@EqualsAndHashCode
 @SuppressWarnings({
     "PMD.TooManyMethods", "PMD.UseConcurrentHashMap", "PMD.GodClass",
     "PMD.OnlyOneConstructorShouldDoInitialization"
@@ -151,6 +150,24 @@ public final class URN implements Comparable<URN>, Serializable {
     @Override
     public String toString() {
         return this.uri;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        final boolean result;
+        if (this == obj) {
+            result = true;
+        } else if (obj instanceof URN) {
+            result = Objects.equals(this.uri, ((URN) obj).uri);
+        } else {
+            result = false;
+        }
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.uri);
     }
 
     @Override

@@ -356,7 +356,7 @@ public final class URN implements Comparable<URN>, Serializable {
                 )
             );
         }
-        if (StringUtils.equalsIgnoreCase(URN.PREFIX, nid)) {
+        if (URN.PREFIX.equalsIgnoreCase(nid)) {
             throw new IllegalArgumentException(
                 "NID can't be 'urn' according to RFC 2141, section 2.1"
             );

@@ -89,6 +89,7 @@ public final class URN implements Comparable<URN>, Serializable {
      * Public ctor.
      * @param text The text of the URN
      * @throws URISyntaxException If syntax is not correct
+     * @checkstyle ConstructorsCodeFreeCheck (10 lines)
      */
     public URN(final String text) throws URISyntaxException {
         if (text == null) {
@@ -105,6 +106,8 @@ public final class URN implements Comparable<URN>, Serializable {
      * Public ctor.
      * @param nid The namespace ID
      * @param nss The namespace specific string
+     * @checkstyle ConstructorsCodeFreeCheck (20 lines)
+     * @checkstyle ConstructorsOrderCheck (20 lines)
      */
     public URN(final String nid, final String nss) {
         if (nid == null) {
@@ -139,6 +142,7 @@ public final class URN implements Comparable<URN>, Serializable {
             throw new IllegalArgumentException("URN can't be NULL");
         }
         try {
+            // @checkstyle QualifyInnerClassCheck (1 line)
             return new URN(text);
         } catch (final URISyntaxException ex) {
             throw new IllegalArgumentException(ex);
@@ -182,6 +186,7 @@ public final class URN implements Comparable<URN>, Serializable {
     public static boolean isValid(final String text) {
         boolean valid = true;
         try {
+            // @checkstyle QualifyInnerClassCheck (1 line)
             new URN(text);
         } catch (final URISyntaxException ex) {
             valid = false;
@@ -450,5 +455,4 @@ public final class URN implements Comparable<URN>, Serializable {
             || chr >= 'a' && chr <= 'z'
             || chr == '/' || chr == '-';
     }
-
 }

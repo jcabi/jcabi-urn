@@ -17,20 +17,12 @@ public final class URNMocker {
     /**
      * Namespace ID.
      */
-    private transient String nid;
+    private transient String nid = "test";
 
     /**
      * Nammespace specific string.
      */
-    private transient String nss;
-
-    /**
-     * Public ctor.
-     */
-    public URNMocker() {
-        this.nid = "test";
-        this.nss = UUID.randomUUID().toString();
-    }
+    private transient String nss = UUID.randomUUID().toString();
 
     /**
      * With this namespace.
@@ -59,5 +51,4 @@ public final class URNMocker {
     public URN mock() {
         return new URN(this.nid, this.nss);
     }
-
 }

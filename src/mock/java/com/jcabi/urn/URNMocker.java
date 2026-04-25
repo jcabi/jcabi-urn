@@ -8,7 +8,6 @@ import java.util.UUID;
 
 /**
  * Mocker of {@link URN}.
- *
  * @since 0.6
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */

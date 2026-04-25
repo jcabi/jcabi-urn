@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Uniform Resource Name (URN), tests.
- *
  * @since 0.6
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */

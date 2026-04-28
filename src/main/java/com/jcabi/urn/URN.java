@@ -6,10 +6,10 @@ package com.jcabi.urn;
 
 import com.jcabi.aspects.Immutable;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -45,11 +45,6 @@ public final class URN implements Comparable<URN>, Serializable {
      * Serialization marker.
      */
     private static final long serialVersionUID = 0xBF46AFCD9612A6DFL;
-
-    /**
-     * Encoding to use.
-     */
-    private static final String ENCODING = "UTF-8";
 
     /**
      * NID of an empty URN.
@@ -243,11 +238,7 @@ public final class URN implements Comparable<URN>, Serializable {
      * @return Namespace specific string
      */
     public String nss() {
-        try {
-            return URLDecoder.decode(this.segment(2), URN.ENCODING);
-        } catch (final UnsupportedEncodingException ex) {
-            throw new IllegalStateException(ex);
-        }
+        return URLDecoder.decode(this.segment(2), StandardCharsets.UTF_8);
     }
 
     /**
@@ -382,11 +373,7 @@ public final class URN implements Comparable<URN>, Serializable {
                 final String[] pair = StringUtils.split(part, '=');
                 final String value;
                 if (pair.length == 2) {
-                    try {
-                        value = URLDecoder.decode(pair[1], URN.ENCODING);
-                    } catch (final UnsupportedEncodingException ex) {
-                        throw new IllegalStateException(ex);
-                    }
+                    value = URLDecoder.decode(pair[1], StandardCharsets.UTF_8);
                 } else {
                     value = "";
                 }
@@ -426,12 +413,7 @@ public final class URN implements Comparable<URN>, Serializable {
      * @return The encoded text
      */
     private static String encode(final String text) {
-        final byte[] bytes;
-        try {
-            bytes = text.getBytes(URN.ENCODING);
-        } catch (final UnsupportedEncodingException ex) {
-            throw new IllegalStateException(ex);
-        }
+        final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
         final StringBuilder encoded = new StringBuilder(100);
         for (final byte chr : bytes) {
             if (URN.allowed(chr)) {

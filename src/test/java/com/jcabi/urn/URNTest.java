@@ -4,6 +4,7 @@
  */
 package com.jcabi.urn;
 
+import com.jcabi.urn.mock.URNMocker;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -21,7 +22,6 @@ import org.junit.jupiter.api.Test;
  * @since 0.6
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class URNTest {
 
     /**
@@ -80,7 +80,7 @@ final class URNTest {
     void instantiatesFromComponentsWithCorrectNid() {
         MatcherAssert.assertThat(
             "should preserve NID",
-            new URN("foo", "\u8416 test").nid(),
+            new URN("foo", "萖 test").nid(),
             Matchers.equalTo("foo")
         );
     }
@@ -92,8 +92,8 @@ final class URNTest {
     void instantiatesFromComponentsWithCorrectNss() {
         MatcherAssert.assertThat(
             "should preserve NSS",
-            new URN("bar", "\u8416 & \u8415 *&^%$#@!-~`\"'").nss(),
-            Matchers.equalTo("\u8416 & \u8415 *&^%$#@!-~`\"'")
+            new URN("bar", "萖 & 萕 *&^%$#@!-~`\"'").nss(),
+            Matchers.equalTo("萖 & 萕 *&^%$#@!-~`\"'")
         );
     }
 
@@ -152,10 +152,10 @@ final class URNTest {
     void comparesForEquivalenceWithUri() throws Exception {
         MatcherAssert.assertThat(
             "should not be equal to URI",
-            new URN("urn:foo:somespecificstring").equals(
-                new URI("urn:foo:somespecificstring")
-            ),
-            Matchers.is(false)
+            new URN("urn:foo:somespecificstring"),
+            Matchers.not(
+                Matchers.<Object>equalTo(new URI("urn:foo:somespecificstring"))
+            )
         );
     }
 
@@ -167,8 +167,8 @@ final class URNTest {
     void comparesForEquivalenceWithString() throws Exception {
         MatcherAssert.assertThat(
             "should not be equal to String",
-            new URN("urn:foo:sometextastext").equals("urn:foo:sometextastext"),
-            Matchers.is(false)
+            new URN("urn:foo:sometextastext"),
+            Matchers.not(Matchers.<Object>equalTo("urn:foo:sometextastext"))
         );
     }
 
@@ -252,15 +252,14 @@ final class URNTest {
             "urn:incorrect%20namespace:",
             "urn:verylongnameofanamespaceverylongnameofanamespace:",
             "urn:test:spaces are not allowed here",
-            "urn:test:unicode-has-to-be-encoded:\u8514",
+            "urn:test:unicode-has-to-be-encoded:蔔",
         };
         for (final String text : texts) {
-            try {
-                URN.create(text);
-                MatcherAssert.assertThat(text, Matchers.nullValue());
-            } catch (final IllegalArgumentException ex) {
-                assert ex != null;
-            }
+            Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> URN.create(text),
+                String.format("%s cannot be a valid URN", text)
+            );
         }
     }
 
@@ -319,7 +318,7 @@ final class URNTest {
         MatcherAssert.assertThat(
             "should encode param correctly",
             new URN("urn:test:x?bb")
-                .param("bar", "\u8514 value?")
+                .param("bar", "蔔 value?")
                 .toString(),
             Matchers.containsString("bar=%E8%94%94%20value%3F")
         );
@@ -347,9 +346,9 @@ final class URNTest {
         MatcherAssert.assertThat(
             "should retrieve unicode param",
             new URN("urn:test:x?bb")
-                .param("crap", "@!$#^\u0433iu**76\u0945")
+                .param("crap", "@!$#^гiu**76ॅ")
                 .param("crap"),
-            Matchers.equalTo("@!$#^\u0433iu**76\u0945")
+            Matchers.equalTo("@!$#^гiu**76ॅ")
         );
     }
 

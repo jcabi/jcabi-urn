@@ -65,7 +65,6 @@ public final class URN implements Comparable<URN>, Serializable {
      * Validating regular expr.
      */
     private static final String REGEX =
-        // @checkstyle LineLength (1 line)
         "^(?i)^urn(?-i):[a-z]{1,31}(:([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)+(\\?\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?(&\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?)*)?\\*?$";
 
     /**
@@ -137,7 +136,6 @@ public final class URN implements Comparable<URN>, Serializable {
             throw new IllegalArgumentException("URN can't be NULL");
         }
         try {
-            // @checkstyle QualifyInnerClassCheck (1 line)
             return new URN(text);
         } catch (final URISyntaxException ex) {
             throw new IllegalArgumentException(ex);
@@ -181,7 +179,6 @@ public final class URN implements Comparable<URN>, Serializable {
     public static boolean isValid(final String text) {
         boolean valid = true;
         try {
-            // @checkstyle QualifyInnerClassCheck (1 line)
             new URN(text);
         } catch (final URISyntaxException ex) {
             valid = false;
@@ -303,7 +300,6 @@ public final class URN implements Comparable<URN>, Serializable {
     public URN pure() {
         String urn = this.toString();
         if (this.hasParams()) {
-            // @checkstyle MultipleStringLiterals (1 line)
             urn = urn.substring(0, urn.indexOf('?'));
         }
         return URN.create(urn);
@@ -314,7 +310,6 @@ public final class URN implements Comparable<URN>, Serializable {
      * @return Has them?
      */
     public boolean hasParams() {
-        // @checkstyle MultipleStringLiterals (1 line)
         return this.toString().contains("?");
     }
 
@@ -327,7 +322,6 @@ public final class URN implements Comparable<URN>, Serializable {
         return StringUtils.splitPreserveAllTokens(
             this.uri,
             URN.SEP,
-            // @checkstyle MagicNumber (1 line)
             3
         )[pos];
     }

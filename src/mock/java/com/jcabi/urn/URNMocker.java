@@ -24,13 +24,6 @@ public final class URNMocker {
     private transient String nss = UUID.randomUUID().toString();
 
     /**
-     * Public ctor.
-     */
-    public URNMocker() {
-        // nothing to initialize
-    }
-
-    /**
      * With this namespace.
      * @param name The namespace
      * @return This object

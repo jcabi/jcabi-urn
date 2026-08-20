@@ -313,11 +313,6 @@ public final class URN implements Comparable<URN>, Serializable {
         return this.toString().contains("?");
     }
 
-    /**
-     * Get segment by position.
-     * @param pos Its position
-     * @return The segment
-     */
     private String segment(final int pos) {
         return StringUtils.splitPreserveAllTokens(
             this.uri,
@@ -326,10 +321,6 @@ public final class URN implements Comparable<URN>, Serializable {
         )[pos];
     }
 
-    /**
-     * Validate URN.
-     * @throws URISyntaxException If it's not valid
-     */
     private void validate() throws URISyntaxException {
         if (this.isEmpty() && !this.nss().isEmpty()) {
             throw new URISyntaxException(
@@ -353,11 +344,6 @@ public final class URN implements Comparable<URN>, Serializable {
         }
     }
 
-    /**
-     * Decode query part of the URN into Map.
-     * @param urn The URN to demap
-     * @return The map of values
-     */
     private static Map<String, String> demap(final String urn) {
         final Map<String, String> map = new TreeMap<>();
         final String[] sectors = StringUtils.split(urn, '?');
@@ -377,11 +363,6 @@ public final class URN implements Comparable<URN>, Serializable {
         return map;
     }
 
-    /**
-     * Encode map of params into query part of URN.
-     * @param params Map of params to convert to query suffix
-     * @return The suffix of URN, starting with "?"
-     */
     private static String enmap(final Map<String, String> params) {
         final StringBuilder query = new StringBuilder(100);
         if (!params.isEmpty()) {
@@ -401,11 +382,6 @@ public final class URN implements Comparable<URN>, Serializable {
         return query.toString();
     }
 
-    /**
-     * Perform proper URL encoding with the text.
-     * @param text The text to encode
-     * @return The encoded text
-     */
     private static String encode(final String text) {
         final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
         final StringBuilder encoded = new StringBuilder(100);
@@ -419,11 +395,6 @@ public final class URN implements Comparable<URN>, Serializable {
         return encoded.toString();
     }
 
-    /**
-     * This char is allowed in URN's NSS part?
-     * @param chr The character
-     * @return It is allowed?
-     */
     private static boolean allowed(final byte chr) {
         // @checkstyle BooleanExpressionComplexity (4 lines)
         return chr >= 'A' && chr <= 'Z'

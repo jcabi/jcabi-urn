@@ -19,7 +19,7 @@ import org.apache.commons.lang3.StringUtils;
  * Uniform Resource Name (URN) as in
  * <a href="http://tools.ietf.org/html/rfc2141">RFC 2141</a>.
  *
- * <p>Usage is similar to {@link java.net.URI} or {@link java.net.URL}:
+ * <p>Usage is similar to {@link java.net.URI} or {@link java.net.URL}:</p>
  *
  * <pre> URN urn = new URN("urn:foo:A123,456");
  * assert urn.nid().equals("foo");
@@ -27,7 +27,7 @@ import org.apache.commons.lang3.StringUtils;
  *
  * <p><b>NOTICE:</b> the implementation is not fully compliant with RFC 2141.
  * It will become compliant in one of our future versions. Once it becomes
- * fully compliant this notice will be removed.
+ * fully compliant this notice will be removed.</p>
  *
  * @see <a href="http://tools.ietf.org/html/rfc2141">RFC 2141</a>
  * @since 0.6
@@ -62,12 +62,6 @@ public final class URN implements Comparable<URN>, Serializable {
     private static final String SEP = ":";
 
     /**
-     * Validating regular expr.
-     */
-    private static final String REGEX =
-        "^(?i)^urn(?-i):[a-z]{1,31}(:([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)+(\\?\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?(&\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?)*)?\\*?$";
-
-    /**
      * The URI.
      */
     private final String uri;
@@ -81,15 +75,21 @@ public final class URN implements Comparable<URN>, Serializable {
 
     /**
      * Public ctor.
+     *
      * @param text The text of the URN
      * @throws URISyntaxException If syntax is not correct
-     * @checkstyle ConstructorsCodeFreeCheck (10 lines)
+     * @checkstyle ConstructorsCodeFreeCheck (16 lines)
      */
     public URN(final String text) throws URISyntaxException {
         if (text == null) {
             throw new IllegalArgumentException("text can't be NULL");
         }
-        if (!text.matches(URN.REGEX)) {
+        // @checkstyle StringLiteralsConcatenation (5 lines)
+        if (!text.matches(
+            "^(?i)^urn(?-i):[a-z]{1,31}(:([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)+"
+                + "(\\?\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?"
+                + "(&\\w+(=([\\-a-zA-Z0-9/]|%[0-9a-fA-F]{2})*)?)*)?\\*?$"
+        )) {
             throw new URISyntaxException(text, "Invalid format of URN");
         }
         this.uri = text;
@@ -98,6 +98,7 @@ public final class URN implements Comparable<URN>, Serializable {
 
     /**
      * Public ctor.
+     *
      * @param nid The namespace ID
      * @param nss The namespace specific string
      * @checkstyle ConstructorsCodeFreeCheck (20 lines)
@@ -127,6 +128,7 @@ public final class URN implements Comparable<URN>, Serializable {
     /**
      * Creates an instance of URN and throws a runtime exception if
      * its syntax is not valid.
+     *
      * @param text The text of the URN
      * @return The URN created
      */
@@ -172,6 +174,7 @@ public final class URN implements Comparable<URN>, Serializable {
 
     /**
      * Is it a valid URN?
+     *
      * @param text The text to validate
      * @return Yes of no
      */
@@ -188,6 +191,7 @@ public final class URN implements Comparable<URN>, Serializable {
 
     /**
      * Does it match the pattern?
+     *
      * @param pattern The pattern to match
      * @return Yes of no
      */
@@ -208,6 +212,7 @@ public final class URN implements Comparable<URN>, Serializable {
 
     /**
      * Is it empty?
+     *
      * @return Yes of no
      */
     public boolean isEmpty() {
@@ -216,6 +221,7 @@ public final class URN implements Comparable<URN>, Serializable {
 
     /**
      * Convert it to URI.
+     *
      * @return The URI
      */
     public URI toURI() {
@@ -224,6 +230,7 @@ public final class URN implements Comparable<URN>, Serializable {
 
     /**
      * Get namespace ID.
+     *
      * @return Namespace ID
      */
     public String nid() {
@@ -232,6 +239,7 @@ public final class URN implements Comparable<URN>, Serializable {
 
     /**
      * Get namespace specific string.
+     *
      * @return Namespace specific string
      */
     public String nss() {
@@ -240,6 +248,7 @@ public final class URN implements Comparable<URN>, Serializable {
 
     /**
      * Get all params.
+     *
      * @return The params
      */
     public Map<String, String> params() {
@@ -248,6 +257,7 @@ public final class URN implements Comparable<URN>, Serializable {
 
     /**
      * Get query param by name.
+     *
      * @param name Name of parameter
      * @return The value of it
      */
@@ -271,6 +281,7 @@ public final class URN implements Comparable<URN>, Serializable {
 
     /**
      * Add (overwrite) a query param and return a new URN.
+     *
      * @param name Name of parameter
      * @param value The value of parameter
      * @return New URN
@@ -295,6 +306,7 @@ public final class URN implements Comparable<URN>, Serializable {
 
     /**
      * Get just body of URN, without params.
+     *
      * @return Clean version of it
      */
     public URN pure() {
@@ -307,6 +319,7 @@ public final class URN implements Comparable<URN>, Serializable {
 
     /**
      * Whether this URN has params?
+     *
      * @return Has them?
      */
     public boolean hasParams() {

@@ -5,6 +5,7 @@
 
 /**
  * URN, tests.
+ *
  * @since 0.6
  */
 package com.jcabi.urn;

@@ -9,6 +9,7 @@ import java.util.UUID;
 
 /**
  * Mocker of {@link URN}.
+ *
  * @since 0.6
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
@@ -17,15 +18,26 @@ public final class URNMocker {
     /**
      * Namespace ID.
      */
-    private transient String nid = "test";
+    private transient String nid;
 
     /**
      * Nammespace specific string.
      */
-    private transient String nss = UUID.randomUUID().toString();
+    private transient String nss;
+
+    /**
+     * Ctor.
+     *
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
+     */
+    public URNMocker() {
+        this.nid = "test";
+        this.nss = UUID.randomUUID().toString();
+    }
 
     /**
      * With this namespace.
+     *
      * @param name The namespace
      * @return This object
      */
@@ -36,6 +48,7 @@ public final class URNMocker {
 
     /**
      * With this nss.
+     *
      * @param text The nss
      * @return This object
      */
@@ -46,6 +59,7 @@ public final class URNMocker {
 
     /**
      * Mock it.
+     *
      * @return Mocked URN
      */
     public URN mock() {

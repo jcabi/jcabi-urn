@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang3.SerializationUtils;
+import org.hamcrest.CustomTypeSafeMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Uniform Resource Name (URN), tests.
+ *
  * @since 0.6
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
@@ -26,6 +28,7 @@ final class URNTest {
 
     /**
      * URN can be instantiated from plain text and provides correct NID.
+     *
      * @throws Exception If there is some problem inside
      */
     @Test
@@ -39,6 +42,7 @@ final class URNTest {
 
     /**
      * URN can be instantiated from plain text and provides correct NSS.
+     *
      * @throws Exception If there is some problem inside
      */
     @Test
@@ -133,6 +137,7 @@ final class URNTest {
 
     /**
      * URN can be tested for equivalence of another URN.
+     *
      * @throws Exception If there is some problem inside
      */
     @Test
@@ -146,6 +151,7 @@ final class URNTest {
 
     /**
      * URN can be tested for equivalence with another URI.
+     *
      * @throws Exception If there is some problem inside
      */
     @Test
@@ -161,6 +167,7 @@ final class URNTest {
 
     /**
      * URN can be tested for equivalence with string.
+     *
      * @throws Exception If there is some problem inside
      */
     @Test
@@ -174,6 +181,7 @@ final class URNTest {
 
     /**
      * URN can be converted to string.
+     *
      * @throws Exception If there is some problem inside
      */
     @Test
@@ -221,7 +229,7 @@ final class URNTest {
             ),
             Matchers.everyItem(
                 Matchers.is(
-                    new org.hamcrest.CustomTypeSafeMatcher<String>("a round-trippable URN") {
+                    new CustomTypeSafeMatcher<String>("a round-trippable URN") {
                         @Override
                         protected boolean matchesSafely(final String text) {
                             return URN.isValid(text)
@@ -299,6 +307,7 @@ final class URNTest {
 
     /**
      * URN can match a pattern.
+     *
      * @throws Exception If there is some problem inside
      */
     @Test
@@ -311,6 +320,7 @@ final class URNTest {
 
     /**
      * URN can encode params in string representation.
+     *
      * @throws Exception If there is some problem inside
      */
     @Test
@@ -326,6 +336,7 @@ final class URNTest {
 
     /**
      * URN can retrieve empty param value.
+     *
      * @throws Exception If there is some problem inside
      */
     @Test
@@ -339,6 +350,7 @@ final class URNTest {
 
     /**
      * URN can retrieve unicode param value.
+     *
      * @throws Exception If there is some problem inside
      */
     @Test
@@ -354,6 +366,7 @@ final class URNTest {
 
     /**
      * URN can fetch a pure part (without params) from itself.
+     *
      * @throws Exception If there is some problem inside
      */
     @Test
@@ -366,6 +379,7 @@ final class URNTest {
 
     /**
      * URN can be serialized.
+     *
      * @throws Exception If there is some problem inside
      */
     @Test
@@ -383,6 +397,7 @@ final class URNTest {
 
     /**
      * URN can be persistent in params ordering.
+     *
      * @throws Exception If there is some problem inside
      */
     @Test
@@ -415,6 +430,7 @@ final class URNTest {
 
     /**
      * URN can be lexical equivalent according to RFC 2144, section 6.
+     *
      * @see <a href="http://www.ietf.org/rfc/rfc2141.txt"/>
      * @see <a href="https://github.com/jcabi/jcabi-urn/issues/8">issue</a>
      */

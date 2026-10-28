@@ -205,6 +205,18 @@ final class URNTest {
     }
 
     /**
+     * Validation rejects a reserved namespace without throwing.
+     */
+    @Test
+    void rejectsReservedNamespaceInValidation() {
+        MatcherAssert.assertThat(
+            "should report a reserved namespace as invalid",
+            URN.isValid("urn:urn:hello"),
+            Matchers.equalTo(false)
+        );
+    }
+
+    /**
      * URN can pass correct syntax and round-trip.
      */
     @Test

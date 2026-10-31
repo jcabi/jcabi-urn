@@ -67,6 +67,35 @@ final class URNTest {
     }
 
     /**
+     * Escaped low bytes retain their value and any following hex character.
+     */
+    @Test
+    void roundTripsLowBytesInNss() {
+        final String low = Character.toString((char) 0x0A);
+        for (final String text : Arrays.asList(
+            low, low.concat("A"), Character.toString((char) 0x01).concat("f")
+        )) {
+            MatcherAssert.assertThat(
+                "should preserve escaped bytes and following characters",
+                new URN("test", text).nss(),
+                Matchers.equalTo(text)
+            );
+        }
+    }
+
+    /**
+     * An escaped low byte produces a valid URI.
+     */
+    @Test
+    void convertsLowByteInNssToUri() {
+        MatcherAssert.assertThat(
+            "should produce a complete percent escape",
+            new URN("test", Character.toString((char) 0x0A)).toURI().toString(),
+            Matchers.equalTo("urn:test:%0A")
+        );
+    }
+
+    /**
      * URN can throw exception when text is NULL.
      */
     @Test

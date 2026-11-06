@@ -183,7 +183,7 @@ public final class URN implements Comparable<URN>, Serializable {
         boolean valid = true;
         try {
             new URN(text);
-        } catch (final URISyntaxException ex) {
+        } catch (final URISyntaxException | IllegalArgumentException ex) {
             valid = false;
         }
         return valid;

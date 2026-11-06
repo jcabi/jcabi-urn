@@ -402,7 +402,7 @@ public final class URN implements Comparable<URN>, Serializable {
             if (URN.allowed(chr)) {
                 encoded.append((char) chr);
             } else {
-                encoded.append('%').append(String.format("%X", chr));
+                encoded.append('%').append(String.format("%02X", chr));
             }
         }
         return encoded.toString();

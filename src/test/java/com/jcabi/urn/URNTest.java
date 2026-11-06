@@ -376,6 +376,36 @@ final class URNTest {
     }
 
     /**
+     * Parameter names cannot introduce additional query fields.
+     */
+    @Test
+    void rejectsInvalidParameterNames() {
+        for (final String name : Arrays.asList(
+            "alpha&beta", "alpha=x&beta", "", "alpha?beta", "alpha-beta"
+        )) {
+            Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> new URN("urn:test:payload").param(name, "value"),
+                "should reject names outside the query grammar"
+            );
+        }
+    }
+
+    /**
+     * Supported parameter names preserve their values.
+     */
+    @Test
+    void roundTripsSupportedParameterNames() {
+        for (final String name : Arrays.asList("alpha", "a_1", "123", "ABC")) {
+            MatcherAssert.assertThat(
+                "should preserve a supported parameter name",
+                URN.create("urn:test:payload").param(name, "value").param(name),
+                Matchers.equalTo("value")
+            );
+        }
+    }
+
+    /**
      * URN can retrieve empty param value.
      *
      * @throws Exception If there is some problem inside

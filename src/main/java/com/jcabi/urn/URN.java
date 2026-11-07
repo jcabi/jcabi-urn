@@ -293,6 +293,11 @@ public final class URN implements Comparable<URN>, Serializable {
         if (value == null) {
             throw new IllegalArgumentException("param value can't be NULL");
         }
+        if (!name.matches("\\w+")) {
+            throw new IllegalArgumentException(
+                "param name must contain only letters, digits, or underscores"
+            );
+        }
         final Map<String, String> params = this.params();
         params.put(name, value.toString());
         return URN.create(

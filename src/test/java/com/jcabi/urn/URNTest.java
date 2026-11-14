@@ -55,6 +55,60 @@ final class URNTest {
     }
 
     /**
+     * Query parameters and wildcards are not part of the NSS.
+     *
+     * @throws Exception If there is some problem inside
+     */
+    @Test
+    void excludesParamsAndWildcardFromNss() throws Exception {
+        for (final String text : Arrays.asList(
+            "urn:foo:bar?a=b", "urn:foo:bar*", "urn:foo:bar?a=b*",
+            "urn:foo:bar?a=b&c=d", "urn:foo:bar?flag"
+        )) {
+            MatcherAssert.assertThat(
+                "should exclude query parameters and the trailing wildcard",
+                new URN(text).nss(),
+                Matchers.equalTo("bar")
+            );
+        }
+    }
+
+    /**
+     * Encoded delimiters belong to the NSS and are decoded only once.
+     *
+     * @throws Exception If there is some problem inside
+     */
+    @Test
+    void preservesEncodedDelimitersInNss() throws Exception {
+        for (final String suffix : Arrays.asList("", "*", "?a=b", "?a=b*")) {
+            MatcherAssert.assertThat(
+                "should strip delimiters before decoding the NSS",
+                new URN("urn:foo:bar%3Fa%3Db%253F%2A".concat(suffix)).nss(),
+                Matchers.equalTo("bar?a=b%3F*")
+            );
+        }
+    }
+
+    /**
+     * Empty NSS values remain empty with parameters and wildcards.
+     *
+     * @throws Exception If there is some problem inside
+     */
+    @Test
+    void preservesEmptyNssWithParamsAndWildcard() throws Exception {
+        for (final String text : Arrays.asList(
+            "urn:foo:", "urn:foo:?a=b", "urn:foo:*", "urn:foo:?a=b*",
+            "urn:void:", "urn:void:?a=b", "urn:void:*", "urn:void:?a=b*"
+        )) {
+            MatcherAssert.assertThat(
+                "should accept an empty NSS with parameters and a wildcard",
+                new URN(text).nss(),
+                Matchers.equalTo("")
+            );
+        }
+    }
+
+    /**
      * URN can encode NSS properly.
      */
     @Test

@@ -243,7 +243,11 @@ public final class URN implements Comparable<URN>, Serializable {
      * @return Namespace specific string
      */
     public String nss() {
-        return URLDecoder.decode(this.segment(2), StandardCharsets.UTF_8);
+        String nss = StringUtils.substringBefore(this.segment(2), '?');
+        if (nss.endsWith("*")) {
+            nss = nss.substring(0, nss.length() - 1);
+        }
+        return URLDecoder.decode(nss, StandardCharsets.UTF_8);
     }
 
     /**

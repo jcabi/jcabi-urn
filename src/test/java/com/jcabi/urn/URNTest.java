@@ -27,6 +27,30 @@ import org.junit.jupiter.api.Test;
 final class URNTest {
 
     /**
+     * A terminal wildcard belongs to the URN pattern, outside its query.
+     */
+    @Test
+    void excludesTerminalWildcardFromParameterValues() {
+        MatcherAssert.assertThat(
+            "only the encoded asterisk belongs to the parameter value",
+            URN.create("urn:test:payload?name=abc%2A*").param("name"),
+            Matchers.equalTo("abc*")
+        );
+    }
+
+    /**
+     * A parameter without a value retains its name before a wildcard.
+     */
+    @Test
+    void excludesTerminalWildcardFromParameterNames() {
+        MatcherAssert.assertThat(
+            "the flag should exist with an empty value",
+            URN.create("urn:test:payload?other=one&flag*").param("flag"),
+            Matchers.equalTo("")
+        );
+    }
+
+    /**
      * URN can be instantiated from plain text and provides correct NID.
      *
      * @throws Exception If there is some problem inside

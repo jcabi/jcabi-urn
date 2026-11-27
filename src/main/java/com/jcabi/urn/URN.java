@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * Uniform Resource Name (URN) as in
@@ -368,7 +369,9 @@ public final class URN implements Comparable<URN>, Serializable {
 
     private static Map<String, String> demap(final String urn) {
         final Map<String, String> map = new TreeMap<>();
-        final String[] sectors = StringUtils.split(urn, '?');
+        final String[] sectors = StringUtils.split(
+            Strings.CS.removeEnd(urn, "*"), '?'
+        );
         if (sectors.length == 2) {
             final String[] parts = StringUtils.split(sectors[1], '&');
             for (final String part : parts) {
